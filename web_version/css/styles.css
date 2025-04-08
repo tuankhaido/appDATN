@@ -1,0 +1,119 @@
+/* Custom styles for the Grade Entry System */
+
+/* Body and general styles */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+/* Card styling */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    border-radius: 8px 8px 0 0 !important;
+    font-weight: 600;
+}
+
+/* Form elements */
+.form-control, .form-select {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-color: #86b7fe;
+}
+
+/* Tabs styling */
+.nav-tabs .nav-link {
+    border-radius: 6px 6px 0 0;
+    font-weight: 500;
+    color: #495057;
+}
+
+.nav-tabs .nav-link.active {
+    color: #0d6efd;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+}
+
+/* Subject input card */
+.subject-card {
+    height: 100%;
+    transition: transform 0.2s ease-in-out;
+}
+
+.subject-card:hover {
+    transform: translateY(-3px);
+}
+
+.subject-card .card-header {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+.subject-code {
+    color: #6c757d;
+    font-size: 0.8rem;
+    display: block;
+}
+
+/* Submit button */
+.btn-primary {
+    padding: 10px 20px;
+    font-weight: 500;
+}
+
+/* Table styling */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background-color: #f1f4f9;
+    border-bottom: none;
+    font-weight: 600;
+}
+
+/* Accordion styling */
+.accordion-button:not(.collapsed) {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(13, 110, 253, 0.25);
+}
+
+/* Alert styling */
+.alert {
+    border-radius: 8px;
+    font-weight: 500;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .subject-card {
+        margin-bottom: 15px;
+    }
+}

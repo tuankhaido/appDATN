@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống nhập điểm môn học</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12 text-center mb-4">
+                <h1 class="text-primary">Hệ thống nhập điểm môn học</h1>
+                <p class="lead">Chọn năm học và nhập điểm cho từng môn học</p>
+            </div>
+        </div>
+
+        <!-- Year Selection -->
+        <div class="row mb-4">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Chọn năm học</h5>
+                    </div>
+                    <div class="card-body">
+                        <select id="year-selector" class="form-select">
+                            <option value="nam1">Năm 1</option>
+                            <option value="nam2">Năm 2</option>
+                            <option value="nam3">Năm 3</option>
+                            <option value="nam4">Năm 4</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subject Input Form -->
+        <form id="subject-form">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0" id="form-title">Nhập điểm cho Năm 1</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Semester tabs -->
+                    <ul class="nav nav-tabs mb-4" id="semester-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="semester1-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#semester1-content" type="button" role="tab" 
+                                    aria-controls="semester1-content" aria-selected="true">Học kỳ 1</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="semester2-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#semester2-content" type="button" role="tab" 
+                                    aria-controls="semester2-content" aria-selected="false">Học kỳ 2</button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab content -->
+                    <div class="tab-content" id="semester-content">
+                        <!-- Semester 1 Content -->
+                        <div class="tab-pane fade show active" id="semester1-content" role="tabpanel" aria-labelledby="semester1-tab">
+                            <div class="row" id="semester1-subjects">
+                                <!-- Subject inputs will be dynamically inserted here -->
+                            </div>
+                        </div>
+
+                        <!-- Semester 2 Content -->
+                        <div class="tab-pane fade" id="semester2-content" role="tabpanel" aria-labelledby="semester2-tab">
+                            <div class="row" id="semester2-subjects">
+                                <!-- Subject inputs will be dynamically inserted here -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i>Gửi
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Results Section (initially hidden) -->
+        <div id="results-section" class="d-none">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Kết quả đã gửi</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" id="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Học kỳ</th>
+                                    <th>Mã học phần</th>
+                                    <th>Môn học</th>
+                                    <th>Điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-body">
+                                <!-- Results will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Information -->
+        <div class="accordion mb-4" id="accordionInfo">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingInfo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo">
+                        Thông tin về ứng dụng
+                    </button>
+                </h2>
+                <div id="collapseInfo" class="accordion-collapse collapse" aria-labelledby="headingInfo" data-bs-parent="#accordionInfo">
+                    <div class="accordion-body">
+                        <h4>Hướng dẫn sử dụng:</h4>
+                        <ol>
+                            <li>Chọn năm học từ dropdown menu</li>
+                            <li>Nhập điểm cho từng môn học (giá trị từ 0 đến 10)</li>
+                            <li>Nhấn nút "Gửi" để lưu dữ liệu</li>
+                        </ol>
+                        <h4>Lưu ý:</h4>
+                        <ul>
+                            <li>Điểm các môn học phải nằm trong khoảng từ 0 đến 10</li>
+                            <li>Tất cả các môn học đều phải có điểm trước khi gửi</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alert-container"></div>
+        
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="js/script.js"></script>
+</body>
+</html>
