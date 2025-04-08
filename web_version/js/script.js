@@ -1,9 +1,13 @@
 // Constants and Variables
 const yearMapping = {
+    // Cho "Năm 1" hiển thị học kỳ 1, 2
     'nam1': { name: 'Năm 1', semesters: [1, 2] },
-    'nam2': { name: 'Năm 2', semesters: [3, 4] },
-    'nam3': { name: 'Năm 3', semesters: [5, 6] },
-    'nam4': { name: 'Năm 4', semesters: [7, 8] }
+    // Cho "Năm 2" hiển thị học kỳ 1, 2, 3, 4
+    'nam2': { name: 'Năm 2', semesters: [1, 2, 3, 4] },
+    // Cho "Năm 3" hiển thị học kỳ 1, 2, 3, 4, 5, 6
+    'nam3': { name: 'Năm 3', semesters: [1, 2, 3, 4, 5, 6] },
+    // Cho "Năm 4" hiển thị học kỳ 1, 2, 3, 4, 5, 6, 7, 8
+    'nam4': { name: 'Năm 4', semesters: [1, 2, 3, 4, 5, 6, 7, 8] }
 };
 
 let subjectsData = [];
@@ -12,8 +16,8 @@ let subjectsData = [];
 const yearSelector = document.getElementById('year-selector');
 const formTitle = document.getElementById('form-title');
 const subjectForm = document.getElementById('subject-form');
-const semester1Subjects = document.getElementById('semester1-subjects');
-const semester2Subjects = document.getElementById('semester2-subjects');
+const semesterTabs = document.getElementById('semester-tabs');
+const semesterContent = document.getElementById('semester-content');
 const resultsSection = document.getElementById('results-section');
 const resultsBody = document.getElementById('results-body');
 const alertContainer = document.getElementById('alert-container');
@@ -34,24 +38,60 @@ async function loadSubjectsData() {
     }
 }
 
+// Create semester tabs for the selected year
+function createSemesterTabs(semesters) {
+    // Clear existing tabs
+    semesterTabs.innerHTML = '';
+    semesterContent.innerHTML = '';
+    
+    // Create tabs and content for each semester
+    semesters.forEach((semester, index) => {
+        // Create tab
+        const tabItem = document.createElement('li');
+        tabItem.className = 'nav-item';
+        tabItem.setAttribute('role', 'presentation');
+        
+        const tabButton = document.createElement('button');
+        tabButton.className = index === 0 ? 'nav-link active' : 'nav-link';
+        tabButton.id = `semester${semester}-tab`;
+        tabButton.setAttribute('data-bs-toggle', 'tab');
+        tabButton.setAttribute('data-bs-target', `#semester${semester}-content`);
+        tabButton.setAttribute('type', 'button');
+        tabButton.setAttribute('role', 'tab');
+        tabButton.setAttribute('aria-controls', `semester${semester}-content`);
+        tabButton.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+        tabButton.textContent = `Học kỳ ${semester}`;
+        
+        tabItem.appendChild(tabButton);
+        semesterTabs.appendChild(tabItem);
+        
+        // Create tab content
+        const tabPane = document.createElement('div');
+        tabPane.className = index === 0 ? 'tab-pane fade show active' : 'tab-pane fade';
+        tabPane.id = `semester${semester}-content`;
+        tabPane.setAttribute('role', 'tabpanel');
+        tabPane.setAttribute('aria-labelledby', `semester${semester}-tab`);
+        
+        const subjectsContainer = document.createElement('div');
+        subjectsContainer.className = 'row';
+        subjectsContainer.id = `semester${semester}-subjects`;
+        
+        tabPane.appendChild(subjectsContainer);
+        semesterContent.appendChild(tabPane);
+        
+        // Filter and display subjects for this semester
+        const semesterSubjectsData = subjectsData.filter(subject => subject.hocKy === semester);
+        displaySubjectsForSemester(semesterSubjectsData, subjectsContainer, semester);
+    });
+}
+
 // Display subjects for the selected year
 function displaySubjectsForYear(yearValue) {
     const yearInfo = yearMapping[yearValue];
     formTitle.textContent = `Nhập điểm cho ${yearInfo.name}`;
     
-    // Clear existing subjects
-    semester1Subjects.innerHTML = '';
-    semester2Subjects.innerHTML = '';
-    
-    // Get semester numbers for the selected year
-    const [semester1, semester2] = yearInfo.semesters;
-    
-    // Filter and display subjects for each semester
-    const semester1SubjectsData = subjectsData.filter(subject => subject.hocKy === semester1);
-    const semester2SubjectsData = subjectsData.filter(subject => subject.hocKy === semester2);
-    
-    displaySubjectsForSemester(semester1SubjectsData, semester1Subjects, semester1);
-    displaySubjectsForSemester(semester2SubjectsData, semester2Subjects, semester2);
+    // Create tabs and display subjects for each semester
+    createSemesterTabs(yearInfo.semesters);
 }
 
 // Display subjects for a semester
@@ -70,13 +110,13 @@ function displaySubjectsForSemester(semesterSubjects, container, semesterNumber)
                 <div class="card-body">
                     <div class="form-floating">
                         <input type="number" class="form-control subject-score" 
-                            id="subject-${subject.maHocPhan}" 
-                            name="subject-${subject.maHocPhan}"
+                            id="subject-${subject.maHocPhan}-${semesterNumber}" 
+                            name="subject-${subject.maHocPhan}-${semesterNumber}"
                             placeholder="Điểm" min="0" max="10" step="0.1" required
                             data-subject-code="${subject.maHocPhan}"
                             data-subject-name="${subject.tenHocPhan}"
                             data-semester="${semesterNumber}">
-                        <label for="subject-${subject.maHocPhan}">Điểm (0-10)</label>
+                        <label for="subject-${subject.maHocPhan}-${semesterNumber}">Điểm (0-10)</label>
                     </div>
                 </div>
             </div>
@@ -115,19 +155,14 @@ function showAlert(type, message, duration = 5000) {
 
 // Validate scores
 function validateScores() {
-    const scoreInputs = document.querySelectorAll('.subject-score');
+    const activeTab = document.querySelector('.tab-pane.active');
+    const scoreInputs = activeTab.querySelectorAll('.subject-score');
     let isValid = true;
     let errorMessages = [];
     
     scoreInputs.forEach(input => {
         // Reset validation visual state
         input.classList.remove('is-invalid');
-        
-        // Skip validation if the tab is not active
-        const tabPane = input.closest('.tab-pane');
-        if (tabPane && !tabPane.classList.contains('active') && !tabPane.classList.contains('show')) {
-            return;
-        }
         
         const value = input.value.trim();
         const score = parseFloat(value);
@@ -158,9 +193,10 @@ function processForm(event) {
         return;
     }
     
-    // Collect all subject scores
+    // Collect all subject scores from the active tab
+    const activeTab = document.querySelector('.tab-pane.active');
     const subjectScores = [];
-    const scoreInputs = document.querySelectorAll('.subject-score');
+    const scoreInputs = activeTab.querySelectorAll('.subject-score');
     
     scoreInputs.forEach(input => {
         if (input.value.trim() !== '') {
