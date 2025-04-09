@@ -8,6 +8,31 @@ app = Flask(__name__, static_folder='.')
 # Đường dẫn tới file Excel
 EXCEL_FILE_PATH = '../attached_assets/Integrated_KhungChuongTrinh.xlsx'
 
+# Hàm đọc dữ liệu từ Excel và chuyển thành JSON
+def read_excel_to_json():
+    try:
+        # Đọc file Excel
+        df = pd.read_excel(EXCEL_FILE_PATH)
+        
+        # Chuyển thành định dạng JSON
+        subjects_data = []
+        for _, row in df.iterrows():
+            subjects_data.append({
+                'tenHocPhan': row['Tên Học Phần'],
+                'maHocPhan': row['Mã Học Phần'],
+                'soTinChi': int(row['Số Tín Chỉ']),
+                'hocKy': int(row['Học Kỳ'])
+            })
+        
+        # Lưu vào file JSON
+        with open('data/subjects.json', 'w', encoding='utf-8') as f:
+            json.dump(subjects_data, f, ensure_ascii=False, indent=2)
+            
+        return subjects_data
+    except Exception as e:
+        print(f"Lỗi khi đọc file Excel: {str(e)}")
+        return []
+
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
@@ -27,18 +52,9 @@ def send_data(path):
 @app.route('/api/subjects', methods=['GET'])
 def get_subjects():
     try:
-        # Đọc file Excel
-        df = pd.read_excel(EXCEL_FILE_PATH)
-        
-        # Chuyển thành định dạng JSON
-        subjects_data = []
-        for _, row in df.iterrows():
-            subjects_data.append({
-                'tenHocPhan': row['Tên Học Phần'],
-                'maHocPhan': row['Mã Học Phần'],
-                'soTinChi': int(row['Số Tín Chỉ']),
-                'hocKy': int(row['Học Kỳ'])
-            })
+        # Đọc từ file JSON
+        with open('data/subjects.json', 'r', encoding='utf-8') as f:
+            subjects_data = json.load(f)
         
         return jsonify(subjects_data)
     except Exception as e:
@@ -66,5 +82,9 @@ if __name__ == '__main__':
     if not os.path.exists('data/submissions.json'):
         with open('data/submissions.json', 'w', encoding='utf-8') as f:
             json.dump([], f)
+    
+    # Tạo file subjects.json từ dữ liệu Excel
+    read_excel_to_json()
+    print("Đã tạo file subjects.json từ dữ liệu Excel")
     
     app.run(host='0.0.0.0', port=5000)
