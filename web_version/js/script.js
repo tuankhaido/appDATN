@@ -1,9 +1,9 @@
 // Constants and Variables
 const yearMapping = {
     'nam1': { name: 'Năm 1', semesters: [1, 2] },
-    'nam2': { name: 'Năm 2', semesters: [3, 4] },
-    'nam3': { name: 'Năm 3', semesters: [5, 6] },
-    'nam4': { name: 'Năm 4', semesters: [7, 8] }
+    'nam2': { name: 'Năm 2', semesters: [1, 2, 3, 4] },
+    'nam3': { name: 'Năm 3', semesters: [1, 2, 3, 4, 5, 6] },
+    'nam4': { name: 'Năm 4', semesters: [1, 2, 3, 4, 5, 6, 7, 8] }
 };
 
 let subjectsData = [];
@@ -41,67 +41,63 @@ function displaySubjectsForYear(yearValue) {
     // Clear existing subjects
     semesterContent.innerHTML = '';
     
-    // Get semester numbers for the selected year
-    const [semester1, semester2] = yearInfo.semesters;
-    
-    // Create container for combined semesters
+    // Create container for all subjects
     const subjectsContainer = document.createElement('div');
     subjectsContainer.className = 'row';
     semesterContent.appendChild(subjectsContainer);
     
-    // Filter subjects for both semesters
-    const semester1SubjectsData = subjectsData.filter(subject => subject.hocKy === semester1);
-    const semester2SubjectsData = subjectsData.filter(subject => subject.hocKy === semester2);
+    // Filter and display subjects for each year up to the selected year
+    const allSubjectsForSelectedYear = subjectsData.filter(subject => 
+        yearInfo.semesters.includes(subject.hocKy)
+    );
     
-    // Combine and display all subjects
-    displaySubjectsHeader(subjectsContainer, `Học kỳ ${semester1} & ${semester2}`);
-    displaySubjectsForSemester(semester1SubjectsData, subjectsContainer, semester1);
-    displaySubjectsForSemester(semester2SubjectsData, subjectsContainer, semester2);
-}
-
-// Display header for the semester section
-function displaySubjectsHeader(container, title) {
-    const headerDiv = document.createElement('div');
-    headerDiv.className = 'col-12 mb-3';
-    headerDiv.innerHTML = `<h4 class="border-bottom pb-2">${title}</h4>`;
-    container.appendChild(headerDiv);
-}
-
-// Display subjects for a semester
-function displaySubjectsForSemester(semesterSubjects, container, semesterNumber) {
-    // Create semester header
-    const headerDiv = document.createElement('div');
-    headerDiv.className = 'col-12 mb-2';
-    headerDiv.innerHTML = `<h5 class="text-muted">Học kỳ ${semesterNumber}</h5>`;
-    container.appendChild(headerDiv);
+    // Group subjects by year for display
+    const subjectsByYear = {
+        'Năm 1': allSubjectsForSelectedYear.filter(subject => subject.hocKy <= 2),
+        'Năm 2': allSubjectsForSelectedYear.filter(subject => subject.hocKy >= 3 && subject.hocKy <= 4),
+        'Năm 3': allSubjectsForSelectedYear.filter(subject => subject.hocKy >= 5 && subject.hocKy <= 6),
+        'Năm 4': allSubjectsForSelectedYear.filter(subject => subject.hocKy >= 7 && subject.hocKy <= 8)
+    };
     
-    // Create subject input cards
-    semesterSubjects.forEach(subject => {
-        const colDiv = document.createElement('div');
-        colDiv.className = 'col-md-6 col-lg-4 mb-3';
-        
-        colDiv.innerHTML = `
-            <div class="card subject-card">
-                <div class="card-header bg-light">
-                    <span class="subject-code">${subject.maHocPhan}</span>
-                    ${subject.tenHocPhan}
-                </div>
-                <div class="card-body">
-                    <div class="form-floating">
-                        <input type="number" class="form-control subject-score" 
-                            id="subject-${subject.maHocPhan}" 
-                            name="subject-${subject.maHocPhan}"
-                            placeholder="Điểm" min="0" max="10" step="0.1" required
-                            data-subject-code="${subject.maHocPhan}"
-                            data-subject-name="${subject.tenHocPhan}"
-                            data-semester="${semesterNumber}">
-                        <label for="subject-${subject.maHocPhan}">Điểm (0-10)</label>
+    // Display subjects by year
+    Object.entries(subjectsByYear).forEach(([yearLabel, yearSubjects]) => {
+        // Only display years that have subjects
+        if (yearSubjects.length > 0) {
+            // Display year header
+            const yearHeaderDiv = document.createElement('div');
+            yearHeaderDiv.className = 'col-12 mb-3 mt-4';
+            yearHeaderDiv.innerHTML = `<h4 class="border-bottom pb-2">${yearLabel}</h4>`;
+            subjectsContainer.appendChild(yearHeaderDiv);
+            
+            // Display subjects for this year
+            yearSubjects.forEach(subject => {
+                const colDiv = document.createElement('div');
+                colDiv.className = 'col-md-6 col-lg-4 mb-3';
+                
+                colDiv.innerHTML = `
+                    <div class="card subject-card">
+                        <div class="card-header bg-light">
+                            <span class="subject-code">${subject.maHocPhan}</span>
+                            ${subject.tenHocPhan}
+                        </div>
+                        <div class="card-body">
+                            <div class="form-floating">
+                                <input type="number" class="form-control subject-score" 
+                                    id="subject-${subject.maHocPhan}" 
+                                    name="subject-${subject.maHocPhan}"
+                                    placeholder="Điểm" min="0" max="10" step="0.1" required
+                                    data-subject-code="${subject.maHocPhan}"
+                                    data-subject-name="${subject.tenHocPhan}"
+                                    data-semester="${subject.hocKy}">
+                                <label for="subject-${subject.maHocPhan}">Điểm (0-10)</label>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        `;
-        
-        container.appendChild(colDiv);
+                `;
+                
+                subjectsContainer.appendChild(colDiv);
+            });
+        }
     });
 }
 
