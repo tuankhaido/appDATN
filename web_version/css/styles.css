@@ -80,21 +80,30 @@ h5.text-muted {
 
 /* Prediction section */
 .prediction-box {
-    padding: 15px;
+    padding: 20px;
     border-radius: 8px;
     background-color: #f8f9fa;
     margin: 10px 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    text-align: center;
 }
 
 .prediction-box h3 {
-    margin-top: 10px;
+    margin: 15px 0;
     font-weight: 700;
+    font-size: 1.8rem;
 }
 
-.prediction-box h5 {
-    margin-top: 10px;
-    font-weight: 500;
+.prediction-box h6.text-muted {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    border-left: none;
+    padding-left: 0;
+}
+
+.prediction-box p {
+    margin: 10px 0;
+    font-size: 1.1rem;
 }
 
 .text-success {

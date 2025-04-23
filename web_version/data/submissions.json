@@ -1,1 +1,77 @@
-[]
+{
+  "scores": [
+    {
+      "subjectCode": "IT0.004.2",
+      "subjectName": "Tin Học Đại Cương",
+      "semester": 1,
+      "score": 10
+    },
+    {
+      "subjectCode": "IT1.002.2",
+      "subjectName": "Bảo Trì Hệ Thống",
+      "semester": 1,
+      "score": 10
+    },
+    {
+      "subjectCode": "BS0.101.3",
+      "subjectName": "Đại Số Tuyến Tính",
+      "semester": 1,
+      "score": 10
+    },
+    {
+      "subjectCode": "IT1.001.3",
+      "subjectName": "Nhập Môn Ngành Cntt",
+      "semester": 1,
+      "score": 10
+    },
+    {
+      "subjectCode": "PS0.001.3",
+      "subjectName": "Triết Học Mác- Lênin",
+      "semester": 1,
+      "score": 9
+    },
+    {
+      "subjectCode": "BS0.201.3",
+      "subjectName": "Vật Lý Điện Từ",
+      "semester": 1,
+      "score": 10
+    },
+    {
+      "subjectCode": "BS0.001.2",
+      "subjectName": "Giải Tích 1",
+      "semester": 1,
+      "score": 8
+    },
+    {
+      "subjectCode": "PS0.002.2",
+      "subjectName": "Kinh Tế Chính Trị Mác- Lênin",
+      "semester": 2,
+      "score": 9
+    },
+    {
+      "subjectCode": "IT1.103.3",
+      "subjectName": "Kỹ Thuật Lập Trình",
+      "semester": 2,
+      "score": 9
+    },
+    {
+      "subjectCode": "BS0.002.2",
+      "subjectName": "Giải Tích 2",
+      "semester": 2,
+      "score": 9
+    },
+    {
+      "subjectCode": "BS0.103.3",
+      "subjectName": "Xác Suất Thống Kê",
+      "semester": 2,
+      "score": 9
+    },
+    {
+      "subjectCode": "PS0.003.2",
+      "subjectName": "Chủ Nghĩa Xã Hội Khoa Học",
+      "semester": 2,
+      "score": 9
+    }
+  ],
+  "year": "nam1"
+}
