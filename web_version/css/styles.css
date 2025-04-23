@@ -80,25 +80,25 @@ body {
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 
-/* Custom color theme - light teal */
+/* Custom color theme - blue #324eb4 */
 .bg-primary, .btn-primary {
-    background-color: #4ECDC4 !important;
-    border-color: #4ECDC4 !important;
+    background-color: #324eb4 !important;
+    border-color: #324eb4 !important;
 }
 
 .text-primary {
-    color: #4ECDC4 !important;
+    color: #324eb4 !important;
 }
 
 .btn-primary:hover {
-    background-color: #36B5AC !important;
-    border-color: #36B5AC !important;
+    background-color: #2a42a0 !important;
+    border-color: #2a42a0 !important;
 }
 
 .btn-primary:focus, .btn-primary:active {
-    background-color: #36B5AC !important;
-    border-color: #36B5AC !important;
-    box-shadow: 0 0 0 0.25rem rgba(78, 205, 196, 0.5) !important;
+    background-color: #2a42a0 !important;
+    border-color: #2a42a0 !important;
+    box-shadow: 0 0 0 0.25rem rgba(50, 78, 180, 0.5) !important;
 }
 
 /* Card header for results */
@@ -121,8 +121,8 @@ body {
 
 /* Average score information */
 .average-score-info {
-    background-color: #e8f7f6;
-    border-left: 4px solid #4ECDC4;
+    background-color: #e8f0ff;
+    border-left: 4px solid #324eb4;
     padding: 1rem;
     margin-bottom: 1rem;
     border-radius: 0.25rem;
@@ -130,5 +130,5 @@ body {
 
 .average-score-info h5 {
     margin-bottom: 0.5rem;
-    color: #2d7974;
+    color: #324eb4;
 }
