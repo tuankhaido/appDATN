@@ -7,6 +7,7 @@ const yearMapping = {
 };
 
 let subjectsData = [];
+let currentYear = 'nam1';
 
 // DOM Elements
 const yearSelector = document.getElementById('year-selector');
@@ -15,6 +16,10 @@ const subjectForm = document.getElementById('subject-form');
 const semesterContent = document.getElementById('semester-content');
 const resultsSection = document.getElementById('results-section');
 const resultsBody = document.getElementById('results-body');
+const predictionSection = document.getElementById('prediction-section');
+const predictionResult = document.getElementById('prediction-result');
+const predictionProbability = document.getElementById('prediction-probability');
+const predictionMessage = document.getElementById('prediction-message');
 const alertContainer = document.getElementById('alert-container');
 
 // Load subjects data from JSON file
@@ -35,6 +40,7 @@ async function loadSubjectsData() {
 
 // Display subjects for the selected year
 function displaySubjectsForYear(yearValue) {
+    currentYear = yearValue;
     const yearInfo = yearMapping[yearValue];
     formTitle.textContent = `Nhập điểm cho ${yearInfo.name}`;
     
@@ -99,6 +105,9 @@ function displaySubjectsForYear(yearValue) {
             });
         }
     });
+    
+    // Hide prediction section when changing year
+    predictionSection.classList.add('d-none');
 }
 
 // Show alert message
@@ -194,17 +203,23 @@ async function submitScores(subjectScores) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(subjectScores)
+            body: JSON.stringify({
+                scores: subjectScores,
+                year: currentYear
+            })
         });
         
         const result = await response.json();
         
-        if (response.ok) {
+        if (result.status === 'success') {
             // Display results
             displayResults(subjectScores);
             
+            // Display prediction
+            displayPrediction(result);
+            
             // Show success message
-            showAlert('success', '<strong>Thành công!</strong> Dữ liệu đã được gửi thành công.');
+            showAlert('success', '<strong>Thành công!</strong> Dữ liệu đã được gửi và dự đoán thành công.');
         } else {
             throw new Error(result.message || 'Lỗi khi gửi dữ liệu');
         }
@@ -235,9 +250,49 @@ function displayResults(subjectScores) {
     
     // Show results section
     resultsSection.classList.remove('d-none');
+}
+
+// Display prediction
+function displayPrediction(predictionData) {
+    // Lấy kết quả dự đoán
+    const prediction = predictionData.prediction;
+    const probability = predictionData.probability;
     
-    // Scroll to results
-    resultsSection.scrollIntoView({ behavior: 'smooth' });
+    // Hiển thị kết quả
+    if (prediction === 1) {
+        predictionResult.textContent = 'Tốt nghiệp';
+        predictionResult.className = 'text-success';
+    } else {
+        predictionResult.textContent = 'Không tốt nghiệp';
+        predictionResult.className = 'text-danger';
+    }
+    
+    // Hiển thị xác suất
+    const probabilityPercent = (probability * 100).toFixed(2);
+    predictionProbability.textContent = `${probabilityPercent}%`;
+    
+    // Hiển thị thông điệp
+    if (prediction === 1) {
+        if (probability >= 0.9) {
+            predictionMessage.textContent = 'Khả năng tốt nghiệp rất cao!';
+        } else if (probability >= 0.7) {
+            predictionMessage.textContent = 'Khả năng tốt nghiệp cao.';
+        } else {
+            predictionMessage.textContent = 'Có khả năng tốt nghiệp, nhưng cần cố gắng hơn.';
+        }
+    } else {
+        if (probability < 0.3) {
+            predictionMessage.textContent = 'Khả năng không tốt nghiệp rất cao, cần nỗ lực nhiều hơn.';
+        } else {
+            predictionMessage.textContent = 'Có khả năng không tốt nghiệp, cần cải thiện điểm số.';
+        }
+    }
+    
+    // Hiện section dự đoán
+    predictionSection.classList.remove('d-none');
+    
+    // Cuộn đến kết quả dự đoán
+    predictionSection.scrollIntoView({ behavior: 'smooth' });
 }
 
 // Event Listeners

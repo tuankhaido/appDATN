@@ -1,5 +1,11 @@
 [
   {
+    "tenHocPhan": "Tin Học Đại Cương",
+    "maHocPhan": "IT0.004.2",
+    "soTinChi": 2,
+    "hocKy": 1
+  },
+  {
     "tenHocPhan": "Bảo Trì Hệ Thống",
     "maHocPhan": "IT1.002.2",
     "soTinChi": 2,
@@ -18,26 +24,14 @@
     "hocKy": 1
   },
   {
-    "tenHocPhan": "Tin Học Đại Cương",
-    "maHocPhan": "IT0.004.2",
-    "soTinChi": 2,
+    "tenHocPhan": "Triết Học Mác- Lênin",
+    "maHocPhan": "PS0.001.3",
+    "soTinChi": 3,
     "hocKy": 1
   },
   {
     "tenHocPhan": "Vật Lý Điện Từ",
     "maHocPhan": "BS0.201.3",
-    "soTinChi": 3,
-    "hocKy": 1
-  },
-  {
-    "tenHocPhan": "Kỹ Năng Mềm",
-    "maHocPhan": "QLY17.2",
-    "soTinChi": 2,
-    "hocKy": 1
-  },
-  {
-    "tenHocPhan": "Triết Học Mác- Lênin",
-    "maHocPhan": "PS0.001.3",
     "soTinChi": 3,
     "hocKy": 1
   },
@@ -48,21 +42,15 @@
     "hocKy": 1
   },
   {
-    "tenHocPhan": "Kỹ Thuật Lập Trình",
-    "maHocPhan": "IT1.103.3",
-    "soTinChi": 3,
-    "hocKy": 2
-  },
-  {
-    "tenHocPhan": "Lập Trình Nâng Cao",
-    "maHocPhan": "CPM215.3",
-    "soTinChi": 3,
-    "hocKy": 2
-  },
-  {
     "tenHocPhan": "Kinh Tế Chính Trị Mác- Lênin",
     "maHocPhan": "PS0.002.2",
     "soTinChi": 2,
+    "hocKy": 2
+  },
+  {
+    "tenHocPhan": "Kỹ Thuật Lập Trình",
+    "maHocPhan": "IT1.103.3",
+    "soTinChi": 3,
     "hocKy": 2
   },
   {
@@ -84,26 +72,14 @@
     "hocKy": 2
   },
   {
-    "tenHocPhan": "Toán Rời Rạc",
-    "maHocPhan": "IT1.105.3",
-    "soTinChi": 3,
-    "hocKy": 3
-  },
-  {
-    "tenHocPhan": "Tư Tưởng Hồ Chí Minh",
-    "maHocPhan": "PS0.005.2",
-    "soTinChi": 2,
-    "hocKy": 3
-  },
-  {
     "tenHocPhan": "Kiến Trúc Và Tổ Chức Máy Tính",
     "maHocPhan": "IT1.107.3",
     "soTinChi": 3,
     "hocKy": 3
   },
   {
-    "tenHocPhan": "Thiết Kế Web",
-    "maHocPhan": "IT1.106.3",
+    "tenHocPhan": "Toán Rời Rạc",
+    "maHocPhan": "IT1.105.3",
     "soTinChi": 3,
     "hocKy": 3
   },
@@ -114,38 +90,26 @@
     "hocKy": 3
   },
   {
+    "tenHocPhan": "Thiết Kế Web",
+    "maHocPhan": "IT1.106.3",
+    "soTinChi": 3,
+    "hocKy": 3
+  },
+  {
     "tenHocPhan": "Cấu Trúc Dữ Liệu Và Giải Thuật",
     "maHocPhan": "IT1.109.3",
     "soTinChi": 3,
     "hocKy": 3
   },
   {
-    "tenHocPhan": "Giải Tích Số",
-    "maHocPhan": "KHM01.2",
+    "tenHocPhan": "Tư Tưởng Hồ Chí Minh",
+    "maHocPhan": "PS0.005.2",
     "soTinChi": 2,
     "hocKy": 3
   },
   {
-    "tenHocPhan": "Hệ Điều Hành",
-    "maHocPhan": "MHT04.3",
-    "soTinChi": 3,
-    "hocKy": 4
-  },
-  {
-    "tenHocPhan": "Lịch Sử Đảng Cộng Sản Việt Nam",
-    "maHocPhan": "PS0.004.2",
-    "soTinChi": 2,
-    "hocKy": 4
-  },
-  {
-    "tenHocPhan": "Nguyên Lý Hệ Điều Hành",
-    "maHocPhan": "IT1.112.3",
-    "soTinChi": 3,
-    "hocKy": 4
-  },
-  {
-    "tenHocPhan": "Công Nghệ Java",
-    "maHocPhan": "IT1.113.3",
+    "tenHocPhan": "Phân Tích Thiết Kế Thuật Toán",
+    "maHocPhan": "IT1.111.3",
     "soTinChi": 3,
     "hocKy": 4
   },
@@ -156,45 +120,33 @@
     "hocKy": 4
   },
   {
-    "tenHocPhan": "Phân Tích Thiết Kế Thuật Toán",
-    "maHocPhan": "IT1.111.3",
+    "tenHocPhan": "Nguyên Lý Hệ Điều Hành",
+    "maHocPhan": "IT1.112.3",
     "soTinChi": 3,
+    "hocKy": 4
+  },
+  {
+    "tenHocPhan": "Lịch Sử Đảng Cộng Sản Việt Nam",
+    "maHocPhan": "PS0.004.2",
+    "soTinChi": 2,
+    "hocKy": 4
+  },
+  {
+    "tenHocPhan": "Công Nghệ Java",
+    "maHocPhan": "IT1.113.3",
+    "soTinChi": 3,
+    "hocKy": 4
+  },
+  {
+    "tenHocPhan": "Tiếng Anh B1",
+    "maHocPhan": "BS0.601.4",
+    "soTinChi": 4,
     "hocKy": 4
   },
   {
     "tenHocPhan": "Mạng Máy Tính",
     "maHocPhan": "IT1.115.3",
     "soTinChi": 3,
-    "hocKy": 5
-  },
-  {
-    "tenHocPhan": "Thuật Toán Và Ứng Dụng",
-    "maHocPhan": "IT1.118.2",
-    "soTinChi": 2,
-    "hocKy": 5
-  },
-  {
-    "tenHocPhan": "Phân Tích Thiết Kế Yêu Cầu",
-    "maHocPhan": "IT1.116.2",
-    "soTinChi": 2,
-    "hocKy": 5
-  },
-  {
-    "tenHocPhan": "Tiếng Nga B1",
-    "maHocPhan": "NGAB1.4",
-    "soTinChi": 4,
-    "hocKy": 5
-  },
-  {
-    "tenHocPhan": "Phân Tích Thiết Kế Hệ Thống",
-    "maHocPhan": "CPM06.3",
-    "soTinChi": 3,
-    "hocKy": 5
-  },
-  {
-    "tenHocPhan": "Thiết Kế Cơ Sở Dữ Liệu",
-    "maHocPhan": "MHT09.2",
-    "soTinChi": 2,
     "hocKy": 5
   },
   {
@@ -210,76 +162,28 @@
     "hocKy": 5
   },
   {
-    "tenHocPhan": "Tiếng Anh B1",
-    "maHocPhan": "ANHB1.4",
-    "soTinChi": 4,
-    "hocKy": 5
-  },
-  {
-    "tenHocPhan": "Tiếng Pháp B1",
-    "maHocPhan": "PHAPB1.4",
-    "soTinChi": 4,
-    "hocKy": 5
-  },
-  {
-    "tenHocPhan": "Chương Trình Dịch",
-    "maHocPhan": "KHM13.3",
-    "soTinChi": 3,
-    "hocKy": 5
-  },
-  {
     "tenHocPhan": "Tiếng Anh Chuyên Ngành",
-    "maHocPhan": "ANHCNTT.3",
+    "maHocPhan": "IT0.101.3",
     "soTinChi": 3,
-    "hocKy": 6
+    "hocKy": 5
   },
   {
-    "tenHocPhan": "Thực Tập Chuyên Môn",
-    "maHocPhan": "CNT301.3",
-    "soTinChi": 3,
-    "hocKy": 6
-  },
-  {
-    "tenHocPhan": "Thực Hành Mạng",
-    "maHocPhan": "MHT21.3",
-    "soTinChi": 3,
-    "hocKy": 6
-  },
-  {
-    "tenHocPhan": "An Toàn Bảo Mật Thông Tin",
-    "maHocPhan": "IT1.222.3",
-    "soTinChi": 3,
-    "hocKy": 6
-  },
-  {
-    "tenHocPhan": "Tiếng Nga",
-    "maHocPhan": "NGACNTT.3",
-    "soTinChi": 3,
-    "hocKy": 6
-  },
-  {
-    "tenHocPhan": "Lập Trình Thiết Bị Di Động",
-    "maHocPhan": "IT1.219.3",
-    "soTinChi": 3,
-    "hocKy": 6
-  },
-  {
-    "tenHocPhan": "Công Nghệ Phần Mềm",
-    "maHocPhan": "CPM08.3",
-    "soTinChi": 3,
-    "hocKy": 6
-  },
-  {
-    "tenHocPhan": "Hệ Điều Hành Unix",
-    "maHocPhan": "IT1.227.2",
+    "tenHocPhan": "Phân Tích Thiết Kế Yêu Cầu",
+    "maHocPhan": "IT1.116.2",
     "soTinChi": 2,
-    "hocKy": 6
+    "hocKy": 5
   },
   {
-    "tenHocPhan": "Hệ Điều Hành Windows Server",
-    "maHocPhan": "IT1.228.2",
+    "tenHocPhan": "Thuật Toán Và Ứng Dụng",
+    "maHocPhan": "IT1.118.2",
     "soTinChi": 2,
-    "hocKy": 6
+    "hocKy": 5
+  },
+  {
+    "tenHocPhan": "Hệ Quản Trị Csdl SQLServer/Oracle",
+    "maHocPhan": "IT1.223.2",
+    "soTinChi": 2,
+    "hocKy": 5
   },
   {
     "tenHocPhan": "Phân Tích Thiết Kế Hướng Đối Tượng",
@@ -288,20 +192,8 @@
     "hocKy": 6
   },
   {
-    "tenHocPhan": "Lý Thuyết Trò Chơi Và Ứng Dụng",
-    "maHocPhan": "KHM20.3",
-    "soTinChi": 3,
-    "hocKy": 6
-  },
-  {
-    "tenHocPhan": "Lập Trình Sử Dụng Api",
-    "maHocPhan": "CPM212.3",
-    "soTinChi": 3,
-    "hocKy": 6
-  },
-  {
-    "tenHocPhan": "Tiếng Pháp",
-    "maHocPhan": "PKTh.3",
+    "tenHocPhan": "Lập Trình Sử Dụng Api/Công Nghệ Phần Mềm",
+    "maHocPhan": "IT1.226.3",
     "soTinChi": 3,
     "hocKy": 6
   },
@@ -312,86 +204,20 @@
     "hocKy": 6
   },
   {
-    "tenHocPhan": "Xử Lý Ảnh",
-    "maHocPhan": "CPM223.3",
+    "tenHocPhan": "An Toàn Bảo Mật Thông Tin",
+    "maHocPhan": "IT1.222.3",
     "soTinChi": 3,
-    "hocKy": 7
+    "hocKy": 6
   },
   {
-    "tenHocPhan": "An Ninh Mạng",
-    "maHocPhan": "IT1.233.3",
+    "tenHocPhan": "Lập Trình Thiết Bị Di Động",
+    "maHocPhan": "IT1.219.3",
     "soTinChi": 3,
-    "hocKy": 7
-  },
-  {
-    "tenHocPhan": "Quản Trị Mạng",
-    "maHocPhan": "MHT15.3",
-    "soTinChi": 3,
-    "hocKy": 7
+    "hocKy": 6
   },
   {
     "tenHocPhan": "Project 1",
     "maHocPhan": "IT1.241.3",
-    "soTinChi": 3,
-    "hocKy": 7
-  },
-  {
-    "tenHocPhan": "Đặc Tả Phần Mềm",
-    "maHocPhan": "KHM10.3",
-    "soTinChi": 3,
-    "hocKy": 7
-  },
-  {
-    "tenHocPhan": "Lập Trình Mạng",
-    "maHocPhan": "IT1.239.3",
-    "soTinChi": 3,
-    "hocKy": 7
-  },
-  {
-    "tenHocPhan": "Khai Phá Dữ Liệu",
-    "maHocPhan": "IT1.231.3",
-    "soTinChi": 3,
-    "hocKy": 7
-  },
-  {
-    "tenHocPhan": "Hệ Thông Tin Địa Lý",
-    "maHocPhan": "MHT18.3",
-    "soTinChi": 3,
-    "hocKy": 7
-  },
-  {
-    "tenHocPhan": "Công Nghệ Oracle",
-    "maHocPhan": "KHM14.3",
-    "soTinChi": 3,
-    "hocKy": 7
-  },
-  {
-    "tenHocPhan": "Chuyên Đề Về Công Nghệ Phần Mềm",
-    "maHocPhan": "CPM10.3",
-    "soTinChi": 3,
-    "hocKy": 7
-  },
-  {
-    "tenHocPhan": "Chuyên Đề Mạng Máy Tính",
-    "maHocPhan": "MHT23.3",
-    "soTinChi": 3,
-    "hocKy": 7
-  },
-  {
-    "tenHocPhan": "Chuyên Đề Khoa Học Máy Tính",
-    "maHocPhan": "KHM219.3",
-    "soTinChi": 3,
-    "hocKy": 7
-  },
-  {
-    "tenHocPhan": "Chuyên Đề Hệ Thống Thông Tin",
-    "maHocPhan": "MHT16.3",
-    "soTinChi": 3,
-    "hocKy": 7
-  },
-  {
-    "tenHocPhan": "Chuyên Đề Công Nghệ Thông Tin",
-    "maHocPhan": "CNT02.3",
     "soTinChi": 3,
     "hocKy": 7
   },

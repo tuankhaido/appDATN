@@ -1,4 +1,4 @@
-/* Custom styles for the Grade Entry System */
+/* Custom styles for the Grade Entry and Prediction System */
 
 /* Body and general styles */
 body {
@@ -78,6 +78,33 @@ h5.text-muted {
     font-weight: 500;
 }
 
+/* Prediction section */
+.prediction-box {
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    margin: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.prediction-box h3 {
+    margin-top: 10px;
+    font-weight: 700;
+}
+
+.prediction-box h5 {
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+.text-success {
+    color: #198754 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
 /* Table styling */
 .table {
     border-radius: 8px;
@@ -116,6 +143,10 @@ h5.text-muted {
     }
     
     .subject-card {
+        margin-bottom: 15px;
+    }
+    
+    .prediction-box {
         margin-bottom: 15px;
     }
 }
