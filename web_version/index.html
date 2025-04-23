@@ -71,13 +71,14 @@
                             <div class="prediction-box">
                                 <h6 class="text-muted">Kết quả:</h6>
                                 <h3 id="prediction-result">-</h3>
+                                <p id="prediction-message">-</p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="prediction-box">
-                                <h6 class="text-muted">Tỷ lệ:</h6>
+                                <h6 class="text-muted">Đánh giá:</h6>
                                 <p>Xác suất dự đoán: <span id="prediction-probability">-</span></p>
-                                <p id="prediction-message">-</p>
+                                <p id="prediction-explanation" class="mt-2 text-info fw-bold">-</p>
                             </div>
                         </div>
                     </div>
@@ -133,6 +134,15 @@
                             <li>Điểm các môn học phải nằm trong khoảng từ 0 đến 10</li>
                             <li>Tất cả các môn học đều phải có điểm trước khi gửi</li>
                             <li>Kết quả dự đoán dựa trên mô hình machine learning</li>
+                            <li>Tiêu chuẩn phân loại tốt nghiệp: 
+                                <ul>
+                                    <li>Điểm trung bình 9.0-10: Xuất sắc</li>
+                                    <li>Điểm trung bình 8.0-8.9: Giỏi</li>
+                                    <li>Điểm trung bình 7.0-7.9: Khá</li>
+                                    <li>Điểm trung bình 5.0-6.9: Trung bình</li>
+                                    <li>Điểm trung bình dưới 5.0: Không tốt nghiệp đúng hạn</li>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                 </div>

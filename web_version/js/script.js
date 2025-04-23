@@ -20,6 +20,7 @@ const predictionSection = document.getElementById('prediction-section');
 const predictionResult = document.getElementById('prediction-result');
 const predictionProbability = document.getElementById('prediction-probability');
 const predictionMessage = document.getElementById('prediction-message');
+const predictionExplanation = document.getElementById('prediction-explanation');
 const alertContainer = document.getElementById('alert-container');
 
 // Load subjects data from JSON file
@@ -187,7 +188,7 @@ function processForm(event) {
                 subjectCode: input.dataset.subjectCode,
                 subjectName: input.dataset.subjectName,
                 semester: parseInt(input.dataset.semester),
-                score: parseFloat(input.value)
+                score: parseFloat(input.value)  // Đảm bảo là kiểu float
             });
         }
     });
@@ -266,6 +267,13 @@ function displayPrediction(predictionData) {
     // Hiển thị điểm trung bình
     const avgScore = predictionData.average_score.toFixed(2);
     predictionMessage.textContent = `Điểm trung bình: ${avgScore}`;
+    
+    // Hiển thị giải thích xác suất
+    if (predictionData.explanation) {
+        predictionExplanation.textContent = predictionData.explanation;
+    } else {
+        predictionExplanation.textContent = '';
+    }
     
     // Hiện section dự đoán
     predictionSection.classList.remove('d-none');

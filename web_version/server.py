@@ -59,16 +59,80 @@ def load_model(year):
         print(f"Lỗi khi tải mô hình cho năm {year}: {str(e)}")
         return None
 
-# Hàm thực hiện dự đoán đơn giản
-def simple_prediction(scores):
-    # Tính điểm trung bình
-    total_score = sum(float(score['score']) for score in scores)
-    avg_score = total_score / len(scores) if scores else 0
-    
+# Hàm dự đoán kết quả tốt nghiệp
+def predict_graduation(year, scores):
+    try:
+        # Tính điểm trung bình
+        total_score = sum(float(score['score']) for score in scores)
+        avg_score = total_score / len(scores) if scores else 0
+        
+        # Tải mô hình tương ứng với năm học
+        model = load_model(year)
+        if not model:
+            print("Không thể tải mô hình, sử dụng dự đoán đơn giản")
+            return simple_prediction(avg_score)
+        
+        # Chuẩn bị dữ liệu đầu vào cho mô hình - dùng DataFrame
+        # Tạo danh sách các môn học và điểm - ĐẢM BẢO KIỂU DỮ LIỆU FLOAT
+        subject_scores = {}
+        for score in scores:
+            subject_code = score['subjectCode']
+            # Chuyển đổi thành kiểu float64
+            subject_scores[subject_code] = float(score['score'])
+        
+        # Tạo DataFrame với dữ liệu môn học, đảm bảo kiểu dữ liệu float64
+        df = pd.DataFrame([subject_scores], dtype=np.float64)
+        
+        # Sử dụng mô hình đơn giản dựa trên điểm trung bình
+        try:
+            # Thử dự đoán với mô hình
+            if hasattr(model, 'predict') and hasattr(model, 'predict_proba'):
+                # Đảm bảo làm việc với các đặc trưng mà mô hình biết
+                if hasattr(model, 'feature_names_in_'):
+                    # Thêm các cột thiếu với giá trị mặc định 0.0
+                    for feature in model.feature_names_in_:
+                        if feature not in df.columns:
+                            df[feature] = 0.0
+                    
+                    # Chỉ giữ lại các cột cần thiết
+                    df = df[model.feature_names_in_]
+                
+                # Dự đoán
+                prediction = model.predict(df)
+                probability = model.predict_proba(df)
+                
+                # Lấy xác suất của lớp dương (tốt nghiệp)
+                graduation_prob = float(probability[0][1]) if probability.shape[1] > 1 else float(probability[0][0])
+                
+                # Xác định loại tốt nghiệp dựa trên điểm trung bình
+                return get_graduation_result(int(prediction[0]), graduation_prob, avg_score)
+            else:
+                return simple_prediction(avg_score)
+        except Exception as e:
+            print(f"Lỗi khi dự đoán với mô hình: {str(e)}")
+            return simple_prediction(avg_score)
+            
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        print(f"Lỗi khi dự đoán: {str(e)}")
+        # Nếu có lỗi, sử dụng phương pháp dự đoán đơn giản
+        return simple_prediction(5.0)  # Giá trị mặc định cho avg_score
+
+# Hàm dự đoán đơn giản dựa trên điểm trung bình
+def simple_prediction(avg_score):
     # Dự đoán đơn giản dựa trên điểm trung bình
     prediction = 1 if avg_score >= 5.0 else 0
+    
+    # Tính xác suất - dựa trên điểm trung bình
+    # Nếu tốt nghiệp (điểm >= 5.0): xác suất = điểm/10 (tối đa 99%)
+    # Nếu không tốt nghiệp (điểm < 5.0): xác suất = 1 - điểm/10 (tối thiểu 1%)
     probability = min(avg_score / 10.0, 0.99) if prediction == 1 else max(1.0 - (avg_score / 10.0), 0.01)
     
+    return get_graduation_result(prediction, probability, avg_score)
+
+# Hàm tạo kết quả dự đoán dựa trên dự đoán và điểm trung bình
+def get_graduation_result(prediction, probability, avg_score):
     # Xác định loại tốt nghiệp dựa trên điểm trung bình
     grad_type = ""
     if prediction == 1:  # Nếu dự đoán là tốt nghiệp
@@ -84,33 +148,38 @@ def simple_prediction(scores):
         result_message = f"Bạn tốt nghiệp Loại {grad_type}"
     else:
         result_message = "Bạn ra trường không đúng hạn"
-        
+    
     return {
         'status': 'success',
         'prediction': prediction,
         'probability': probability,
         'message': result_message,
-        'average_score': avg_score
+        'average_score': avg_score,
+        'explanation': explain_probability(probability, prediction)
     }
 
-# Hàm dự đoán kết quả tốt nghiệp
-def predict_graduation(year, scores):
-    try:
-        # Tải mô hình tương ứng với năm học
-        model = load_model(year)
-        if not model:
-            print("Không thể tải mô hình, sử dụng dự đoán đơn giản")
-            return simple_prediction(scores)
-        
-        # Sử dụng dự đoán đơn giản thay thế vì mô hình gặp lỗi
-        return simple_prediction(scores)
-        
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        print(f"Lỗi khi dự đoán: {str(e)}")
-        # Nếu có lỗi, sử dụng phương pháp dự đoán đơn giản
-        return simple_prediction(scores)
+# Hàm giải thích về cách tính xác suất
+def explain_probability(probability, prediction):
+    prob_percent = probability * 100
+    
+    if prediction == 1:
+        if prob_percent >= 90:
+            return "Xác suất tốt nghiệp rất cao"
+        elif prob_percent >= 70:
+            return "Xác suất tốt nghiệp cao"
+        elif prob_percent >= 50:
+            return "Xác suất tốt nghiệp trung bình"
+        else:
+            return "Xác suất tốt nghiệp thấp"
+    else:
+        if prob_percent >= 90:
+            return "Xác suất không tốt nghiệp đúng hạn rất cao"
+        elif prob_percent >= 70:
+            return "Xác suất không tốt nghiệp đúng hạn cao"
+        elif prob_percent >= 50:
+            return "Xác suất không tốt nghiệp đúng hạn trung bình"
+        else:
+            return "Xác suất không tốt nghiệp đúng hạn thấp"
 
 @app.route('/')
 def index():
