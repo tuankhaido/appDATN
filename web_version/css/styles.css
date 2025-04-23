@@ -1,6 +1,5 @@
-/* Custom styles for the Grade Entry and Prediction System */
+/* Custom Styles */
 
-/* Body and general styles */
 body {
     background-color: #f8f9fa;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -12,137 +11,100 @@ body {
 
 /* Card styling */
 .card {
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border: none;
-    margin-bottom: 20px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
 }
 
 .card-header {
-    border-radius: 8px 8px 0 0 !important;
-    font-weight: 600;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    padding: 1rem;
 }
 
-/* Form elements */
-.form-control, .form-select {
-    border-radius: 6px;
-    border: 1px solid #ced4da;
-    padding: 10px 15px;
-    transition: all 0.3s ease;
+.card-header h5 {
+    margin-bottom: 0;
 }
 
-.form-control:focus, .form-select:focus {
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    border-color: #86b7fe;
+.card-body {
+    padding: 1.5rem;
 }
 
-/* Semester Headers */
-h4.border-bottom {
-    padding-bottom: 0.5rem;
-    color: #0d6efd;
-    font-weight: 600;
-    margin-top: 0.5rem;
-}
-
-h5.text-muted {
-    font-size: 1rem;
-    border-left: 3px solid #6c757d;
-    padding-left: 10px;
-    margin-bottom: 1rem;
-}
-
-/* Subject input card */
+/* Subject card styling */
 .subject-card {
     height: 100%;
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 .subject-card:hover {
     transform: translateY(-3px);
-}
-
-.subject-card .card-header {
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
 .subject-code {
-    color: #6c757d;
-    font-size: 0.8rem;
-    display: block;
-}
-
-/* Submit button */
-.btn-primary {
-    padding: 10px 20px;
-    font-weight: 500;
-}
-
-/* Prediction section */
-.prediction-box {
-    padding: 20px;
-    border-radius: 8px;
-    background-color: #f8f9fa;
-    margin: 10px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    text-align: center;
-}
-
-.prediction-box h3 {
-    margin: 15px 0;
-    font-weight: 700;
-    font-size: 1.8rem;
-}
-
-.prediction-box h6.text-muted {
-    font-size: 1rem;
-    margin-bottom: 10px;
-    border-left: none;
-    padding-left: 0;
-}
-
-.prediction-box p {
-    margin: 10px 0;
-    font-size: 1.1rem;
-}
-
-.text-success {
-    color: #198754 !important;
-}
-
-.text-danger {
-    color: #dc3545 !important;
+    font-weight: bold;
+    padding: 0.2rem 0.5rem;
+    background-color: #f1f1f1;
+    border-radius: 0.25rem;
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
 }
 
 /* Table styling */
-.table {
-    border-radius: 8px;
-    overflow: hidden;
+.table th {
+    background-color: #f8f9fa;
 }
 
-.table thead th {
-    background-color: #f1f4f9;
-    border-bottom: none;
-    font-weight: 600;
+/* Prediction styling */
+.prediction-box {
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+    height: 100%;
 }
 
-/* Accordion styling */
-.accordion-button:not(.collapsed) {
-    background-color: rgba(13, 110, 253, 0.1);
-    color: #0d6efd;
+/* Form styling */
+.form-floating > .form-control {
+    padding-top: 1.625rem;
+    padding-bottom: 0.625rem;
 }
 
-.accordion-button:focus {
-    box-shadow: none;
-    border-color: rgba(13, 110, 253, 0.25);
+.form-floating > label {
+    padding: 1rem 0.75rem;
 }
 
 /* Alert styling */
 .alert {
-    border-radius: 8px;
-    font-weight: 500;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Custom color theme - light teal */
+.bg-primary, .btn-primary {
+    background-color: #4ECDC4 !important;
+    border-color: #4ECDC4 !important;
+}
+
+.text-primary {
+    color: #4ECDC4 !important;
+}
+
+.btn-primary:hover {
+    background-color: #36B5AC !important;
+    border-color: #36B5AC !important;
+}
+
+.btn-primary:focus, .btn-primary:active {
+    background-color: #36B5AC !important;
+    border-color: #36B5AC !important;
+    box-shadow: 0 0 0 0.25rem rgba(78, 205, 196, 0.5) !important;
+}
+
+/* Card header for results */
+.bg-success {
+    background-color: #2ECC71 !important;
+    border-color: #2ECC71 !important;
 }
 
 /* Responsive adjustments */
@@ -151,11 +113,22 @@ h5.text-muted {
         padding: 1rem;
     }
     
-    .subject-card {
-        margin-bottom: 15px;
-    }
-    
     .prediction-box {
-        margin-bottom: 15px;
+        padding: 1rem;
+        margin-bottom: 1rem;
     }
+}
+
+/* Average score information */
+.average-score-info {
+    background-color: #e8f7f6;
+    border-left: 4px solid #4ECDC4;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.25rem;
+}
+
+.average-score-info h5 {
+    margin-bottom: 0.5rem;
+    color: #2d7974;
 }

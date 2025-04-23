@@ -18,7 +18,7 @@ const resultsSection = document.getElementById('results-section');
 const resultsBody = document.getElementById('results-body');
 const predictionSection = document.getElementById('prediction-section');
 const predictionResult = document.getElementById('prediction-result');
-const predictionMessage = document.getElementById('prediction-message');
+const averageScore = document.getElementById('average-score');
 const alertContainer = document.getElementById('alert-container');
 
 // Load subjects data from JSON file
@@ -217,6 +217,9 @@ async function submitScores(subjectScores) {
         const result = await response.json();
         
         if (result.status === 'success') {
+            // Cập nhật điểm trung bình
+            averageScore.textContent = result.average_score.toFixed(2);
+            
             // Display results
             displayResults(subjectScores);
             
@@ -264,15 +267,11 @@ function displayPrediction(predictionData) {
     predictionResult.textContent = predictionData.message;
     predictionResult.className = predictionData.prediction === 1 ? 'text-success' : 'text-danger';
     
-    // Hiển thị điểm trung bình
-    const avgScore = predictionData.average_score.toFixed(2);
-    predictionMessage.textContent = `Điểm trung bình tích lũy: ${avgScore}`;
-    
     // Hiện section dự đoán
     predictionSection.classList.remove('d-none');
     
-    // Cuộn đến kết quả dự đoán
-    predictionSection.scrollIntoView({ behavior: 'smooth' });
+    // Cuộn đến bảng kết quả
+    resultsSection.scrollIntoView({ behavior: 'smooth' });
 }
 
 // Event Listeners
