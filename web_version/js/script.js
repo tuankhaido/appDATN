@@ -18,9 +18,7 @@ const resultsSection = document.getElementById('results-section');
 const resultsBody = document.getElementById('results-body');
 const predictionSection = document.getElementById('prediction-section');
 const predictionResult = document.getElementById('prediction-result');
-const predictionProbability = document.getElementById('prediction-probability');
 const predictionMessage = document.getElementById('prediction-message');
-const predictionExplanation = document.getElementById('prediction-explanation');
 const alertContainer = document.getElementById('alert-container');
 
 // Load subjects data from JSON file
@@ -88,6 +86,9 @@ function displaySubjectsForYear(yearValue) {
                             ${subject.tenHocPhan}
                         </div>
                         <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted">Số tín chỉ: ${subject.soTinChi}</span>
+                            </div>
                             <div class="form-floating">
                                 <input type="number" class="form-control subject-score" 
                                     id="subject-${subject.maHocPhan}" 
@@ -95,6 +96,7 @@ function displaySubjectsForYear(yearValue) {
                                     placeholder="Điểm" min="0" max="10" step="0.1" required
                                     data-subject-code="${subject.maHocPhan}"
                                     data-subject-name="${subject.tenHocPhan}"
+                                    data-subject-credits="${subject.soTinChi}"
                                     data-semester="${subject.hocKy}">
                                 <label for="subject-${subject.maHocPhan}">Điểm (0-10)</label>
                             </div>
@@ -187,6 +189,7 @@ function processForm(event) {
             subjectScores.push({
                 subjectCode: input.dataset.subjectCode,
                 subjectName: input.dataset.subjectName,
+                credits: parseInt(input.dataset.subjectCredits) || 0,
                 semester: parseInt(input.dataset.semester),
                 score: parseFloat(input.value)  // Đảm bảo là kiểu float
             });
@@ -245,6 +248,7 @@ function displayResults(subjectScores) {
             <td>Học kỳ ${subject.semester}</td>
             <td>${subject.subjectCode}</td>
             <td>${subject.subjectName}</td>
+            <td>${subject.credits}</td>
             <td>${subject.score.toFixed(1)}</td>
         `;
         resultsBody.appendChild(row);
@@ -260,20 +264,9 @@ function displayPrediction(predictionData) {
     predictionResult.textContent = predictionData.message;
     predictionResult.className = predictionData.prediction === 1 ? 'text-success' : 'text-danger';
     
-    // Hiển thị xác suất
-    const probabilityPercent = (predictionData.probability * 100).toFixed(2);
-    predictionProbability.textContent = `${probabilityPercent}%`;
-    
     // Hiển thị điểm trung bình
     const avgScore = predictionData.average_score.toFixed(2);
-    predictionMessage.textContent = `Điểm trung bình: ${avgScore}`;
-    
-    // Hiển thị giải thích xác suất
-    if (predictionData.explanation) {
-        predictionExplanation.textContent = predictionData.explanation;
-    } else {
-        predictionExplanation.textContent = '';
-    }
+    predictionMessage.textContent = `Điểm trung bình tích lũy: ${avgScore}`;
     
     // Hiện section dự đoán
     predictionSection.classList.remove('d-none');
