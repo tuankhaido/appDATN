@@ -11,6 +11,9 @@ let currentYear = 'nam1';
 let isViewBySemester = false;
 let currentActiveSemester = 'all';
 
+// Store input values
+let storedInputValues = {};
+
 // DOM Elements
 const yearSelector = document.getElementById('year-selector');
 const formTitle = document.getElementById('form-title');
@@ -50,8 +53,37 @@ async function loadSubjectsData() {
     }
 }
 
+// Save current input values
+function saveInputValues() {
+    document.querySelectorAll('.subject-score').forEach(input => {
+        if (input.value) {
+            storedInputValues[input.id] = input.value;
+        }
+    });
+}
+
+// Restore saved input values
+function restoreInputValues() {
+    document.querySelectorAll('.subject-score').forEach(input => {
+        if (storedInputValues[input.id]) {
+            input.value = storedInputValues[input.id];
+            
+            // Trigger validation styling
+            const card = input.closest('.subject-card');
+            const score = parseFloat(input.value);
+            
+            if (!isNaN(score) && score >= 0 && score <= 10) {
+                card.classList.add('valid');
+            }
+        }
+    });
+}
+
 // Display subjects for the selected year
 function displaySubjectsForYear(yearValue) {
+    // Save current input values before changing year
+    saveInputValues();
+    
     currentYear = yearValue;
     const yearInfo = yearMapping[yearValue];
     formTitle.textContent = `Nhập điểm cho ${yearInfo.name}`;
@@ -113,6 +145,9 @@ function displaySubjectsForYear(yearValue) {
         // Add click event for buttons
         document.querySelectorAll('.semester-button').forEach(button => {
             button.addEventListener('click', function() {
+                // Save current values before switching semester
+                saveInputValues();
+                
                 document.querySelectorAll('.semester-button').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 currentActiveSemester = this.getAttribute('data-semester');
@@ -129,6 +164,9 @@ function displaySubjectsForYear(yearValue) {
     } else {
         displaySubjectsGrid(allSubjectsForSelectedYear);
     }
+    
+    // Restore previously entered values
+    restoreInputValues();
     
     // Hide prediction section when changing year
     predictionSection.classList.add('d-none');
@@ -286,6 +324,9 @@ function addScoreInputListeners() {
             } else {
                 card.classList.add('valid');
             }
+            
+            // Store value in memory
+            storedInputValues[this.id] = value;
         });
     });
 }
@@ -324,6 +365,9 @@ function filterAndDisplaySubjects() {
     } else {
         displaySubjectsGrid(filteredSubjects);
     }
+    
+    // Restore previously entered values
+    restoreInputValues();
     
     // Highlight search matches
     if (searchValue) {
@@ -416,6 +460,9 @@ function validateScores() {
 function processForm(event) {
     event.preventDefault();
     
+    // Make sure all input values are saved
+    saveInputValues();
+    
     const { isValid, errorMessages } = validateScores();
     
     if (!isValid) {
@@ -423,18 +470,22 @@ function processForm(event) {
         return;
     }
     
-    // Collect all subject scores
+    // Collect all subject scores for visible and hidden subjects
     const subjectScores = [];
-    const scoreInputs = document.querySelectorAll('.subject-score');
+    const yearInfo = yearMapping[currentYear];
     
-    scoreInputs.forEach(input => {
-        if (input.value.trim() !== '') {
+    // For all subjects in the current year
+    subjectsData.filter(subject => yearInfo.semesters.includes(subject.hocKy)).forEach(subject => {
+        const inputId = `subject-${subject.maHocPhan}`;
+        
+        // Check if we have a stored value for this subject
+        if (storedInputValues[inputId]) {
             subjectScores.push({
-                subjectCode: input.dataset.subjectCode,
-                subjectName: input.dataset.subjectName,
-                credits: parseInt(input.dataset.subjectCredits) || 0,
-                semester: parseInt(input.dataset.semester),
-                score: parseFloat(input.value)  // Đảm bảo là kiểu float
+                subjectCode: subject.maHocPhan,
+                subjectName: subject.tenHocPhan,
+                credits: subject.soTinChi,
+                semester: subject.hocKy,
+                score: parseFloat(storedInputValues[inputId])
             });
         }
     });
@@ -521,6 +572,7 @@ function displayPrediction(predictionData) {
 function fillAllScores(value) {
     document.querySelectorAll('.subject-score').forEach(input => {
         input.value = value;
+        storedInputValues[input.id] = value;
         
         // Trigger input event to update validation
         const inputEvent = new Event('input', {
@@ -533,6 +585,9 @@ function fillAllScores(value) {
 
 // Toggle view mode between grid and semester grouping
 function toggleViewMode() {
+    // Save current values
+    saveInputValues();
+    
     isViewBySemester = !isViewBySemester;
     
     if (isViewBySemester) {
