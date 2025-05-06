@@ -8,6 +8,8 @@ const yearMapping = {
 
 let subjectsData = [];
 let currentYear = 'nam1';
+let isViewBySemester = false;
+let currentActiveSemester = 'all';
 
 // DOM Elements
 const yearSelector = document.getElementById('year-selector');
@@ -20,6 +22,17 @@ const predictionSection = document.getElementById('prediction-section');
 const predictionResult = document.getElementById('prediction-result');
 const averageScore = document.getElementById('average-score');
 const alertContainer = document.getElementById('alert-container');
+const searchSubject = document.getElementById('search-subject');
+const viewSemester = document.getElementById('view-semester');
+const fillAllBtn = document.getElementById('fill-all-btn');
+const confirmFillAll = document.getElementById('confirm-fill-all');
+const semesterTabs = document.getElementById('semester-tabs');
+const subjectCount = document.getElementById('subject-count');
+const subjectTools = document.getElementById('subject-tools');
+const exportResultsBtn = document.getElementById('export-results');
+
+// Quick Fill Modal
+const quickFillModal = new bootstrap.Modal(document.getElementById('quick-fill-modal'));
 
 // Load subjects data from JSON file
 async function loadSubjectsData() {
@@ -45,73 +58,298 @@ function displaySubjectsForYear(yearValue) {
     
     // Clear existing subjects
     semesterContent.innerHTML = '';
+    semesterTabs.innerHTML = '';
+    
+    // Filter and display subjects for the selected year
+    const allSubjectsForSelectedYear = subjectsData.filter(subject => 
+        yearInfo.semesters.includes(subject.hocKy)
+    );
+    
+    // Update subject count
+    subjectCount.textContent = `${allSubjectsForSelectedYear.length} môn học`;
+    
+    // Show tools if there are subjects
+    if (allSubjectsForSelectedYear.length > 0) {
+        subjectTools.classList.remove('d-none');
+    } else {
+        subjectTools.classList.add('d-none');
+    }
+    
+    // Get unique semesters for this year
+    const semesters = [...new Set(allSubjectsForSelectedYear.map(subject => subject.hocKy))].sort((a, b) => a - b);
+    
+    // Setup semester tabs
+    if (semesters.length > 1) {
+        semesterTabs.classList.remove('d-none');
+        
+        // Add "All" tab
+        const allLi = document.createElement('li');
+        allLi.className = 'nav-item';
+        allLi.innerHTML = `
+            <a class="nav-link active" role="button" data-semester="all">
+                Tất cả <span class="badge bg-secondary ms-1">${allSubjectsForSelectedYear.length}</span>
+            </a>
+        `;
+        semesterTabs.appendChild(allLi);
+        
+        // Add tabs for each semester
+        semesters.forEach(semester => {
+            const semesterSubjects = allSubjectsForSelectedYear.filter(subject => subject.hocKy === semester);
+            const li = document.createElement('li');
+            li.className = 'nav-item';
+            li.innerHTML = `
+                <a class="nav-link" role="button" data-semester="${semester}">
+                    Học kỳ ${semester} <span class="badge bg-secondary ms-1">${semesterSubjects.length}</span>
+                </a>
+            `;
+            semesterTabs.appendChild(li);
+        });
+        
+        // Add click event for tabs
+        document.querySelectorAll('#semester-tabs .nav-link').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('#semester-tabs .nav-link').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentActiveSemester = this.dataset.semester;
+                filterAndDisplaySubjects();
+            });
+        });
+    } else {
+        semesterTabs.classList.add('d-none');
+    }
+    
+    // Display all subjects initially
+    if (isViewBySemester) {
+        displaySubjectsBySemester(allSubjectsForSelectedYear);
+    } else {
+        displaySubjectsGrid(allSubjectsForSelectedYear);
+    }
+    
+    // Hide prediction section when changing year
+    predictionSection.classList.add('d-none');
+    resultsSection.classList.add('d-none');
+}
+
+// Display subjects in a grid layout
+function displaySubjectsGrid(subjects) {
+    // Clear existing subjects
+    semesterContent.innerHTML = '';
     
     // Create container for all subjects
     const subjectsContainer = document.createElement('div');
     subjectsContainer.className = 'row';
     semesterContent.appendChild(subjectsContainer);
     
-    // Filter and display subjects for each year up to the selected year
-    const allSubjectsForSelectedYear = subjectsData.filter(subject => 
+    // Display subjects
+    subjects.forEach(subject => {
+        const colDiv = document.createElement('div');
+        colDiv.className = 'col-md-6 col-lg-4 mb-3';
+        colDiv.setAttribute('data-semester', subject.hocKy);
+        colDiv.setAttribute('data-subject-code', subject.maHocPhan);
+        colDiv.setAttribute('data-subject-name', subject.tenHocPhan.toLowerCase());
+        
+        colDiv.innerHTML = `
+            <div class="card subject-card">
+                <div class="card-header bg-light">
+                    <span class="subject-code">${subject.maHocPhan}</span>
+                    <span class="subject-name">${subject.tenHocPhan}</span>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">Số tín chỉ: ${subject.soTinChi}</span>
+                        <span class="badge bg-secondary">Học kỳ ${subject.hocKy}</span>
+                    </div>
+                    <div class="form-floating">
+                        <input type="number" class="form-control subject-score" 
+                            id="subject-${subject.maHocPhan}" 
+                            name="subject-${subject.maHocPhan}"
+                            placeholder="Điểm" min="0" max="10" step="0.1" required
+                            data-subject-code="${subject.maHocPhan}"
+                            data-subject-name="${subject.tenHocPhan}"
+                            data-subject-credits="${subject.soTinChi}"
+                            data-semester="${subject.hocKy}">
+                        <label for="subject-${subject.maHocPhan}">Điểm (0-10)</label>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        subjectsContainer.appendChild(colDiv);
+    });
+    
+    // Add input event listeners for validation
+    addScoreInputListeners();
+}
+
+// Display subjects grouped by semester
+function displaySubjectsBySemester(subjects) {
+    // Clear existing subjects
+    semesterContent.innerHTML = '';
+    
+    // Group subjects by semester
+    const semesterGroups = {};
+    subjects.forEach(subject => {
+        if (!semesterGroups[subject.hocKy]) {
+            semesterGroups[subject.hocKy] = [];
+        }
+        semesterGroups[subject.hocKy].push(subject);
+    });
+    
+    // Sort semesters
+    const sortedSemesters = Object.keys(semesterGroups).sort((a, b) => parseInt(a) - parseInt(b));
+    
+    // Create containers for each semester
+    sortedSemesters.forEach(semester => {
+        const semesterSubjects = semesterGroups[semester];
+        
+        // Create semester header
+        const semesterDiv = document.createElement('div');
+        semesterDiv.className = 'semester-container';
+        semesterDiv.setAttribute('data-semester', semester);
+        
+        const semesterHeader = document.createElement('h4');
+        semesterHeader.className = 'semester-heading';
+        semesterHeader.textContent = `Học kỳ ${semester}`;
+        
+        semesterDiv.appendChild(semesterHeader);
+        
+        // Create row for subjects
+        const subjectsRow = document.createElement('div');
+        subjectsRow.className = 'row';
+        
+        // Add subjects for this semester
+        semesterSubjects.forEach(subject => {
+            const colDiv = document.createElement('div');
+            colDiv.className = 'col-md-6 col-lg-4 mb-3';
+            colDiv.setAttribute('data-semester', subject.hocKy);
+            colDiv.setAttribute('data-subject-code', subject.maHocPhan);
+            colDiv.setAttribute('data-subject-name', subject.tenHocPhan.toLowerCase());
+            
+            colDiv.innerHTML = `
+                <div class="card subject-card">
+                    <div class="card-header bg-light">
+                        <span class="subject-code">${subject.maHocPhan}</span>
+                        <span class="subject-name">${subject.tenHocPhan}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Số tín chỉ: ${subject.soTinChi}</span>
+                        </div>
+                        <div class="form-floating">
+                            <input type="number" class="form-control subject-score" 
+                                id="subject-${subject.maHocPhan}" 
+                                name="subject-${subject.maHocPhan}"
+                                placeholder="Điểm" min="0" max="10" step="0.1" required
+                                data-subject-code="${subject.maHocPhan}"
+                                data-subject-name="${subject.tenHocPhan}"
+                                data-subject-credits="${subject.soTinChi}"
+                                data-semester="${subject.hocKy}">
+                            <label for="subject-${subject.maHocPhan}">Điểm (0-10)</label>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            subjectsRow.appendChild(colDiv);
+        });
+        
+        semesterDiv.appendChild(subjectsRow);
+        semesterContent.appendChild(semesterDiv);
+    });
+    
+    // Add input event listeners for validation
+    addScoreInputListeners();
+}
+
+// Add event listeners to score inputs for validation
+function addScoreInputListeners() {
+    document.querySelectorAll('.subject-score').forEach(input => {
+        input.addEventListener('input', function() {
+            const value = this.value.trim();
+            const score = parseFloat(value);
+            const card = this.closest('.subject-card');
+            
+            card.classList.remove('valid', 'invalid');
+            
+            if (value === '') {
+                // Empty value - neutral state
+                return;
+            }
+            
+            if (isNaN(score) || score < 0 || score > 10) {
+                card.classList.add('invalid');
+            } else {
+                card.classList.add('valid');
+            }
+        });
+    });
+}
+
+// Filter subjects based on search and semester
+function filterAndDisplaySubjects() {
+    const searchValue = searchSubject.value.toLowerCase();
+    const yearInfo = yearMapping[currentYear];
+    
+    // Get all subjects for this year
+    const allSubjectsForYear = subjectsData.filter(subject => 
         yearInfo.semesters.includes(subject.hocKy)
     );
     
-    // Group subjects by year for display
-    const subjectsByYear = {
-        'Năm 1': allSubjectsForSelectedYear.filter(subject => subject.hocKy <= 2),
-        'Năm 2': allSubjectsForSelectedYear.filter(subject => subject.hocKy >= 3 && subject.hocKy <= 4),
-        'Năm 3': allSubjectsForSelectedYear.filter(subject => subject.hocKy >= 5 && subject.hocKy <= 6),
-        'Năm 4': allSubjectsForSelectedYear.filter(subject => subject.hocKy >= 7 && subject.hocKy <= 8)
-    };
+    // Filter based on search and semester
+    let filteredSubjects = allSubjectsForYear;
     
-    // Display subjects by year
-    Object.entries(subjectsByYear).forEach(([yearLabel, yearSubjects]) => {
-        // Only display years that have subjects
-        if (yearSubjects.length > 0) {
-            // Display year header
-            const yearHeaderDiv = document.createElement('div');
-            yearHeaderDiv.className = 'col-12 mb-3 mt-4';
-            yearHeaderDiv.innerHTML = `<h4 class="border-bottom pb-2">${yearLabel}</h4>`;
-            subjectsContainer.appendChild(yearHeaderDiv);
+    // Apply semester filter
+    if (currentActiveSemester !== 'all') {
+        filteredSubjects = filteredSubjects.filter(subject => 
+            subject.hocKy === parseInt(currentActiveSemester)
+        );
+    }
+    
+    // Apply search filter
+    if (searchValue) {
+        filteredSubjects = filteredSubjects.filter(subject => 
+            subject.maHocPhan.toLowerCase().includes(searchValue) || 
+            subject.tenHocPhan.toLowerCase().includes(searchValue)
+        );
+    }
+    
+    // Display filtered subjects
+    if (isViewBySemester && currentActiveSemester === 'all') {
+        displaySubjectsBySemester(filteredSubjects);
+    } else {
+        displaySubjectsGrid(filteredSubjects);
+    }
+    
+    // Highlight search matches
+    if (searchValue) {
+        highlightSearchMatches(searchValue);
+    }
+    
+    // Show message if no results
+    if (filteredSubjects.length === 0) {
+        semesterContent.innerHTML = `
+            <div class="alert alert-info">
+                Không tìm thấy môn học nào phù hợp với tiêu chí tìm kiếm.
+            </div>
+        `;
+    }
+}
+
+// Highlight search matches
+function highlightSearchMatches(searchValue) {
+    document.querySelectorAll('.subject-name').forEach(element => {
+        const originalText = element.textContent;
+        const lowerText = originalText.toLowerCase();
+        const index = lowerText.indexOf(searchValue);
+        
+        if (index !== -1) {
+            const before = originalText.substring(0, index);
+            const match = originalText.substring(index, index + searchValue.length);
+            const after = originalText.substring(index + searchValue.length);
             
-            // Display subjects for this year
-            yearSubjects.forEach(subject => {
-                const colDiv = document.createElement('div');
-                colDiv.className = 'col-md-6 col-lg-4 mb-3';
-                
-                colDiv.innerHTML = `
-                    <div class="card subject-card">
-                        <div class="card-header bg-light">
-                            <span class="subject-code">${subject.maHocPhan}</span>
-                            ${subject.tenHocPhan}
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-muted">Số tín chỉ: ${subject.soTinChi}</span>
-                            </div>
-                            <div class="form-floating">
-                                <input type="number" class="form-control subject-score" 
-                                    id="subject-${subject.maHocPhan}" 
-                                    name="subject-${subject.maHocPhan}"
-                                    placeholder="Điểm" min="0" max="10" step="0.1" required
-                                    data-subject-code="${subject.maHocPhan}"
-                                    data-subject-name="${subject.tenHocPhan}"
-                                    data-subject-credits="${subject.soTinChi}"
-                                    data-semester="${subject.hocKy}">
-                                <label for="subject-${subject.maHocPhan}">Điểm (0-10)</label>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                subjectsContainer.appendChild(colDiv);
-            });
+            element.innerHTML = `${before}<span class="search-highlight">${match}</span>${after}`;
         }
     });
-    
-    // Hide prediction section when changing year
-    predictionSection.classList.add('d-none');
-    resultsSection.classList.add('d-none');
 }
 
 // Show alert message
@@ -274,6 +512,88 @@ function displayPrediction(predictionData) {
     resultsSection.scrollIntoView({ behavior: 'smooth' });
 }
 
+// Fill all scores with a value
+function fillAllScores(value) {
+    document.querySelectorAll('.subject-score').forEach(input => {
+        input.value = value;
+        
+        // Trigger input event to update validation
+        const inputEvent = new Event('input', {
+            bubbles: true,
+            cancelable: true,
+        });
+        input.dispatchEvent(inputEvent);
+    });
+}
+
+// Toggle view mode between grid and semester grouping
+function toggleViewMode() {
+    isViewBySemester = !isViewBySemester;
+    
+    if (isViewBySemester) {
+        viewSemester.innerHTML = '<i class="fas fa-grip-horizontal me-1"></i> Xem dạng lưới';
+    } else {
+        viewSemester.innerHTML = '<i class="fas fa-th-list me-1"></i> Xem theo học kỳ';
+    }
+    
+    // Update view
+    filterAndDisplaySubjects();
+}
+
+// Export results to CSV file
+function exportResultsToCSV() {
+    try {
+        // Get data from table
+        const table = document.getElementById('results-table');
+        const rows = table.querySelectorAll('tr');
+        
+        // Create CSV content
+        let csvContent = "data:text/csv;charset=utf-8,";
+        
+        // Add header
+        const headerRow = rows[0];
+        const headers = headerRow.querySelectorAll('th');
+        const headerValues = [];
+        
+        headers.forEach(header => {
+            headerValues.push(`"${header.textContent}"`);
+        });
+        
+        csvContent += headerValues.join(',') + '\n';
+        
+        // Add data rows
+        const dataRows = table.querySelectorAll('tbody tr');
+        dataRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const rowValues = [];
+            
+            cells.forEach(cell => {
+                rowValues.push(`"${cell.textContent}"`);
+            });
+            
+            csvContent += rowValues.join(',') + '\n';
+        });
+        
+        // Add average score
+        csvContent += `\n"Điểm trung bình tích lũy:","${averageScore.textContent}"`;
+        
+        // Create download link
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', `ket-qua-diem-${currentYear}.csv`);
+        document.body.appendChild(link);
+        
+        // Trigger download
+        link.click();
+        
+        // Clean up
+        document.body.removeChild(link);
+    } catch (error) {
+        showAlert('danger', `<strong>Lỗi xuất file:</strong> ${error.message}`);
+    }
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
     // Load subjects data
@@ -286,4 +606,36 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Form submission
     subjectForm.addEventListener('submit', processForm);
+    
+    // Search input
+    if (searchSubject) {
+        searchSubject.addEventListener('input', filterAndDisplaySubjects);
+    }
+    
+    // View mode toggle
+    if (viewSemester) {
+        viewSemester.addEventListener('click', toggleViewMode);
+    }
+    
+    // Fill all button
+    if (fillAllBtn) {
+        fillAllBtn.addEventListener('click', () => {
+            quickFillModal.show();
+        });
+    }
+    
+    // Confirm fill all
+    if (confirmFillAll) {
+        confirmFillAll.addEventListener('click', () => {
+            const value = document.getElementById('fill-all-value').value;
+            fillAllScores(value);
+            quickFillModal.hide();
+            showAlert('success', `Đã điền giá trị ${value} cho tất cả các môn học.`);
+        });
+    }
+    
+    // Export results
+    if (exportResultsBtn) {
+        exportResultsBtn.addEventListener('click', exportResultsToCSV);
+    }
 });

@@ -38,23 +38,57 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Actions Toolbar -->
+        <div id="subject-tools" class="row mb-3 d-none">
+            <div class="col-md-6 mb-2">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" id="search-subject" class="form-control" placeholder="Tìm môn học...">
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="d-flex justify-content-end">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary" id="view-semester">
+                            <i class="fas fa-th-list me-1"></i> Xem theo học kỳ
+                        </button>
+                        <button class="btn btn-outline-primary" id="fill-all-btn">
+                            <i class="fas fa-magic me-1"></i> Nhập nhanh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Subject Input Form -->
         <form id="subject-form">
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0" id="form-title">Nhập điểm cho Năm 1</h5>
+                    <span class="badge bg-light text-primary" id="subject-count">0 môn học</span>
                 </div>
                 <div class="card-body">
+                    <!-- Filter tabs for semesters -->
+                    <div id="semester-tabs" class="mb-4 d-none">
+                        <ul class="nav nav-pills nav-fill">
+                            <!-- Semester tabs will be dynamically inserted here -->
+                        </ul>
+                    </div>
+                    
                     <!-- Semester content - subjects will be displayed here -->
                     <div id="semester-content">
                         <!-- Subjects will be dynamically inserted here -->
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane me-2"></i>Gửi điểm và dự đoán
-                    </button>
+                    <div class="row">
+                        <div class="col-12 d-grid d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Gửi điểm và dự đoán
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
@@ -74,8 +108,11 @@
         <!-- Results Section (initially hidden) -->
         <div id="results-section" class="d-none">
             <div class="card mb-4">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Điểm số đã nhập</h5>
+                    <button class="btn btn-sm btn-light" id="export-results">
+                        <i class="fas fa-download me-1"></i> Xuất kết quả
+                    </button>
                 </div>
                 <div class="card-body">
                     <!-- Average Score Information -->
@@ -119,6 +156,12 @@
                             <li>Nhập điểm cho từng môn học (giá trị từ 0 đến 10)</li>
                             <li>Nhấn nút "Gửi điểm và dự đoán" để xem kết quả dự đoán</li>
                         </ol>
+                        <h4>Công cụ hỗ trợ:</h4>
+                        <ul>
+                            <li><strong>Tìm môn học</strong>: Nhập tên hoặc mã môn học để lọc nhanh</li>
+                            <li><strong>Xem theo học kỳ</strong>: Nhóm các môn học theo học kỳ để dễ nhập điểm</li>
+                            <li><strong>Nhập nhanh</strong>: Điền giá trị cho tất cả các môn học cùng lúc</li>
+                        </ul>
                         <h4>Lưu ý:</h4>
                         <ul>
                             <li>Điểm các môn học phải nằm trong khoảng từ 0 đến 10</li>
@@ -142,6 +185,28 @@
         <!-- Alert Messages -->
         <div id="alert-container"></div>
         
+        <!-- Quick Fill Modal -->
+        <div class="modal fade" id="quick-fill-modal" tabindex="-1" aria-labelledby="quick-fill-modal-label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="quick-fill-modal-label">Nhập điểm nhanh</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Nhập điểm cho tất cả các môn học cùng lúc:</p>
+                        <div class="mb-3">
+                            <label for="fill-all-value" class="form-label">Điểm (0-10):</label>
+                            <input type="number" class="form-control" id="fill-all-value" min="0" max="10" step="0.1" value="7">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-primary" id="confirm-fill-all">Áp dụng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Bootstrap Bundle with Popper -->

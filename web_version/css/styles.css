@@ -16,6 +16,11 @@ body {
     margin-bottom: 1.5rem;
     border-radius: 0.5rem;
     overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
@@ -35,11 +40,21 @@ body {
 .subject-card {
     height: 100%;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border-left: 4px solid transparent;
+    margin-bottom: 1rem;
 }
 
 .subject-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.subject-card.valid {
+    border-left-color: #2ECC71;
+}
+
+.subject-card.invalid {
+    border-left-color: #E74C3C;
 }
 
 .subject-code {
@@ -54,6 +69,10 @@ body {
 /* Table styling */
 .table th {
     background-color: #f8f9fa;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(50, 78, 180, 0.05);
 }
 
 /* Prediction styling */
@@ -101,6 +120,20 @@ body {
     box-shadow: 0 0 0 0.25rem rgba(50, 78, 180, 0.5) !important;
 }
 
+.btn-outline-primary {
+    color: #324eb4 !important;
+    border-color: #324eb4 !important;
+}
+
+.btn-outline-primary:hover, 
+.btn-outline-primary:focus,
+.btn-outline-primary:active,
+.btn-outline-primary.active {
+    color: #fff !important;
+    background-color: #324eb4 !important;
+    border-color: #324eb4 !important;
+}
+
 /* Card header for results */
 .bg-success {
     background-color: #2ECC71 !important;
@@ -131,4 +164,94 @@ body {
 .average-score-info h5 {
     margin-bottom: 0.5rem;
     color: #324eb4;
+}
+
+/* Semester tabs styling */
+.nav-pills .nav-link {
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: #495057;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link:hover {
+    background-color: #e9ecef;
+}
+
+.nav-pills .nav-link.active {
+    color: #fff;
+    background-color: #324eb4;
+}
+
+.semester-heading {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef;
+    color: #324eb4;
+}
+
+/* Search Highlight */
+.search-highlight {
+    background-color: rgba(255, 240, 0, 0.3);
+    border-radius: 2px;
+    padding: 2px 0;
+}
+
+/* Badge counter */
+.badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.7rem;
+}
+
+/* Transition effects */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Semester content container */
+.semester-container {
+    margin-bottom: 2rem;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.semester-container.hidden {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    margin: 0;
+}
+
+/* Buttons and controls */
+#subject-tools {
+    transition: all 0.3s ease;
+}
+
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+}
+
+/* Modal styling */
+.modal-content {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
