@@ -56,9 +56,17 @@ function displaySubjectsForYear(yearValue) {
     const yearInfo = yearMapping[yearValue];
     formTitle.textContent = `Nhập điểm cho ${yearInfo.name}`;
     
+    // Reset active semester
+    currentActiveSemester = 'all';
+    
     // Clear existing subjects
     semesterContent.innerHTML = '';
-    semesterTabs.innerHTML = '';
+    
+    // Clear semester buttons
+    const semesterButtonsContainer = semesterTabs.querySelector('.semester-buttons');
+    if (semesterButtonsContainer) {
+        semesterButtonsContainer.innerHTML = '';
+    }
     
     // Filter and display subjects for the selected year
     const allSubjectsForSelectedYear = subjectsData.filter(subject => 
@@ -78,39 +86,36 @@ function displaySubjectsForYear(yearValue) {
     // Get unique semesters for this year
     const semesters = [...new Set(allSubjectsForSelectedYear.map(subject => subject.hocKy))].sort((a, b) => a - b);
     
-    // Setup semester tabs
+    // Setup semester buttons
     if (semesters.length > 1) {
         semesterTabs.classList.remove('d-none');
+        const buttonsContainer = semesterTabs.querySelector('.semester-buttons');
         
-        // Add "All" tab
-        const allLi = document.createElement('li');
-        allLi.className = 'nav-item';
-        allLi.innerHTML = `
-            <a class="nav-link active" role="button" data-semester="all">
-                Tất cả <span class="badge bg-secondary ms-1">${allSubjectsForSelectedYear.length}</span>
-            </a>
-        `;
-        semesterTabs.appendChild(allLi);
+        // Add "All" button
+        const allButton = document.createElement('button');
+        allButton.type = 'button';
+        allButton.className = 'semester-button active';
+        allButton.setAttribute('data-semester', 'all');
+        allButton.innerHTML = `Tất cả <span class="badge">${allSubjectsForSelectedYear.length}</span>`;
+        buttonsContainer.appendChild(allButton);
         
-        // Add tabs for each semester
+        // Add buttons for each semester
         semesters.forEach(semester => {
             const semesterSubjects = allSubjectsForSelectedYear.filter(subject => subject.hocKy === semester);
-            const li = document.createElement('li');
-            li.className = 'nav-item';
-            li.innerHTML = `
-                <a class="nav-link" role="button" data-semester="${semester}">
-                    Học kỳ ${semester} <span class="badge bg-secondary ms-1">${semesterSubjects.length}</span>
-                </a>
-            `;
-            semesterTabs.appendChild(li);
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'semester-button';
+            button.setAttribute('data-semester', semester);
+            button.innerHTML = `Học kỳ ${semester} <span class="badge">${semesterSubjects.length}</span>`;
+            buttonsContainer.appendChild(button);
         });
         
-        // Add click event for tabs
-        document.querySelectorAll('#semester-tabs .nav-link').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('#semester-tabs .nav-link').forEach(t => t.classList.remove('active'));
+        // Add click event for buttons
+        document.querySelectorAll('.semester-button').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.semester-button').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-                currentActiveSemester = this.dataset.semester;
+                currentActiveSemester = this.getAttribute('data-semester');
                 filterAndDisplaySubjects();
             });
         });
@@ -287,7 +292,7 @@ function addScoreInputListeners() {
 
 // Filter subjects based on search and semester
 function filterAndDisplaySubjects() {
-    const searchValue = searchSubject.value.toLowerCase();
+    const searchValue = searchSubject ? searchSubject.value.toLowerCase() : '';
     const yearInfo = yearMapping[currentYear];
     
     // Get all subjects for this year

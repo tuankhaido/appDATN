@@ -166,24 +166,47 @@ body {
     color: #324eb4;
 }
 
-/* Semester tabs styling */
-.nav-pills .nav-link {
-    border-radius: 0.25rem;
-    padding: 0.75rem 1rem;
-    margin-right: 0.5rem;
-    margin-bottom: 0.5rem;
-    color: #495057;
+/* Semester buttons styling */
+.semester-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.semester-button {
+    display: inline-block;
+    padding: 8px 16px;
     background-color: #f8f9fa;
-    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    color: #495057;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    min-width: 120px;
 }
 
-.nav-pills .nav-link:hover {
+.semester-button:hover {
     background-color: #e9ecef;
+    border-color: #ced4da;
 }
 
-.nav-pills .nav-link.active {
-    color: #fff;
+.semester-button.active {
     background-color: #324eb4;
+    border-color: #324eb4;
+    color: white;
+}
+
+.semester-button .badge {
+    margin-left: 5px;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.semester-button.active .badge {
+    background-color: white;
+    color: #324eb4;
 }
 
 .semester-heading {
