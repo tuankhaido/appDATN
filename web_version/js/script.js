@@ -14,6 +14,9 @@ let currentActiveSemester = 'all';
 // Store input values
 let storedInputValues = {};
 
+// Store validation state
+let formIsValid = false;
+
 // DOM Elements
 const yearSelector = document.getElementById('year-selector');
 const formTitle = document.getElementById('form-title');
@@ -33,9 +36,11 @@ const semesterTabs = document.getElementById('semester-tabs');
 const subjectCount = document.getElementById('subject-count');
 const subjectTools = document.getElementById('subject-tools');
 const exportResultsBtn = document.getElementById('export-results');
+const submitButton = document.querySelector('#subject-form button[type="submit"]');
 
 // Quick Fill Modal
-const quickFillModal = new bootstrap.Modal(document.getElementById('quick-fill-modal'));
+const quickFillModal = document.getElementById('quick-fill-modal') ? 
+    new bootstrap.Modal(document.getElementById('quick-fill-modal')) : null;
 
 // Load subjects data from JSON file
 async function loadSubjectsData() {
@@ -74,9 +79,14 @@ function restoreInputValues() {
             
             if (!isNaN(score) && score >= 0 && score <= 10) {
                 card.classList.add('valid');
+            } else {
+                card.classList.add('invalid');
             }
         }
     });
+    
+    // Update form validation state
+    validateAllFields();
 }
 
 // Display subjects for the selected year
@@ -171,6 +181,9 @@ function displaySubjectsForYear(yearValue) {
     // Hide prediction section when changing year
     predictionSection.classList.add('d-none');
     resultsSection.classList.add('d-none');
+    
+    // Update submit button state
+    updateSubmitButtonState();
 }
 
 // Display subjects in a grid layout
@@ -212,6 +225,9 @@ function displaySubjectsGrid(subjects) {
                             data-subject-credits="${subject.soTinChi}"
                             data-semester="${subject.hocKy}">
                         <label for="subject-${subject.maHocPhan}">Điểm (0-10)</label>
+                    </div>
+                    <div class="invalid-feedback">
+                        Điểm phải từ 0 đến 10
                     </div>
                 </div>
             </div>
@@ -289,6 +305,9 @@ function displaySubjectsBySemester(subjects) {
                                 data-semester="${subject.hocKy}">
                             <label for="subject-${subject.maHocPhan}">Điểm (0-10)</label>
                         </div>
+                        <div class="invalid-feedback">
+                            Điểm phải từ 0 đến 10
+                        </div>
                     </div>
                 </div>
             `;
@@ -304,6 +323,50 @@ function displaySubjectsBySemester(subjects) {
     addScoreInputListeners();
 }
 
+// Validate all input fields
+function validateAllFields() {
+    // Check all input fields
+    let allValid = true;
+    const scoreInputs = document.querySelectorAll('.subject-score');
+    
+    scoreInputs.forEach(input => {
+        // Check if this input is valid
+        if (input.value.trim() === '') {
+            allValid = false;
+            return;
+        }
+        
+        const score = parseFloat(input.value);
+        if (isNaN(score) || score < 0 || score > 10) {
+            allValid = false;
+            return;
+        }
+    });
+    
+    // Update the global validation state
+    formIsValid = allValid;
+    
+    // Update the submit button state
+    updateSubmitButtonState();
+    
+    return allValid;
+}
+
+// Update submit button state
+function updateSubmitButtonState() {
+    if (submitButton) {
+        if (formIsValid) {
+            submitButton.disabled = false;
+            submitButton.classList.remove('btn-secondary');
+            submitButton.classList.add('btn-primary');
+        } else {
+            submitButton.disabled = true;
+            submitButton.classList.remove('btn-primary');
+            submitButton.classList.add('btn-secondary');
+        }
+    }
+}
+
 // Add event listeners to score inputs for validation
 function addScoreInputListeners() {
     document.querySelectorAll('.subject-score').forEach(input => {
@@ -313,6 +376,7 @@ function addScoreInputListeners() {
             const card = this.closest('.subject-card');
             
             card.classList.remove('valid', 'invalid');
+            input.classList.remove('is-invalid');
             
             if (value === '') {
                 // Empty value - neutral state
@@ -321,12 +385,16 @@ function addScoreInputListeners() {
             
             if (isNaN(score) || score < 0 || score > 10) {
                 card.classList.add('invalid');
+                input.classList.add('is-invalid');
             } else {
                 card.classList.add('valid');
             }
             
             // Store value in memory
             storedInputValues[this.id] = value;
+            
+            // Validate all fields and update submit button
+            validateAllFields();
         });
     });
 }
@@ -428,34 +496,6 @@ function showAlert(type, message, duration = 5000) {
     window.scrollTo({ top: alertContainer.offsetTop, behavior: 'smooth' });
 }
 
-// Validate scores
-function validateScores() {
-    const scoreInputs = document.querySelectorAll('.subject-score');
-    let isValid = true;
-    let errorMessages = [];
-    
-    scoreInputs.forEach(input => {
-        // Reset validation visual state
-        input.classList.remove('is-invalid');
-        
-        const value = input.value.trim();
-        const score = parseFloat(value);
-        const subjectName = input.dataset.subjectName;
-        
-        if (value === '') {
-            input.classList.add('is-invalid');
-            errorMessages.push(`Vui lòng nhập điểm cho môn ${subjectName}`);
-            isValid = false;
-        } else if (isNaN(score) || score < 0 || score > 10) {
-            input.classList.add('is-invalid');
-            errorMessages.push(`Điểm của môn ${subjectName} phải từ 0 đến 10`);
-            isValid = false;
-        }
-    });
-    
-    return { isValid, errorMessages };
-}
-
 // Process form submission
 function processForm(event) {
     event.preventDefault();
@@ -463,10 +503,19 @@ function processForm(event) {
     // Make sure all input values are saved
     saveInputValues();
     
-    const { isValid, errorMessages } = validateScores();
-    
-    if (!isValid) {
-        showAlert('danger', `<strong>Lỗi:</strong><ul>${errorMessages.map(msg => `<li>${msg}</li>`).join('')}</ul>`);
+    // Validate the form
+    if (!validateAllFields()) {
+        showAlert('danger', `<strong>Lỗi:</strong> Vui lòng nhập đúng điểm cho tất cả các môn học (từ 0 đến 10).`);
+        // Highlight all invalid fields
+        document.querySelectorAll('.subject-score').forEach(input => {
+            const value = input.value.trim();
+            const score = parseFloat(value);
+            
+            if (value === '' || isNaN(score) || score < 0 || score > 10) {
+                input.classList.add('is-invalid');
+                input.closest('.subject-card').classList.add('invalid');
+            }
+        });
         return;
     }
     
@@ -600,55 +649,75 @@ function toggleViewMode() {
     filterAndDisplaySubjects();
 }
 
-// Export results to CSV file
+// Export results to Excel file using server-side generation
 function exportResultsToCSV() {
     try {
-        // Get data from table
-        const table = document.getElementById('results-table');
-        const rows = table.querySelectorAll('tr');
+        // Make sure all input values are saved
+        saveInputValues();
         
-        // Create CSV content
-        let csvContent = "data:text/csv;charset=utf-8,";
+        // Collect all subject scores for visible and hidden subjects
+        const subjectScores = [];
+        const yearInfo = yearMapping[currentYear];
         
-        // Add header
-        const headerRow = rows[0];
-        const headers = headerRow.querySelectorAll('th');
-        const headerValues = [];
-        
-        headers.forEach(header => {
-            headerValues.push(`"${header.textContent}"`);
+        // For all subjects in the current year
+        subjectsData.filter(subject => yearInfo.semesters.includes(subject.hocKy)).forEach(subject => {
+            const inputId = `subject-${subject.maHocPhan}`;
+            
+            // Check if we have a stored value for this subject
+            if (storedInputValues[inputId]) {
+                subjectScores.push({
+                    subjectCode: subject.maHocPhan,
+                    subjectName: subject.tenHocPhan,
+                    credits: subject.soTinChi,
+                    semester: subject.hocKy,
+                    score: parseFloat(storedInputValues[inputId])
+                });
+            }
         });
         
-        csvContent += headerValues.join(',') + '\n';
+        if (subjectScores.length === 0) {
+            showAlert('warning', 'Vui lòng nhập ít nhất một điểm trước khi xuất file');
+            return;
+        }
         
-        // Add data rows
-        const dataRows = table.querySelectorAll('tbody tr');
-        dataRows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            const rowValues = [];
-            
-            cells.forEach(cell => {
-                rowValues.push(`"${cell.textContent}"`);
+        // Gửi dữ liệu để xuất Excel
+        fetch('/api/export-excel', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                scores: subjectScores,
+                year: currentYear
+            })
+        }).then(response => {
+            // Kiểm tra nếu response không phải là JSON (tức là file Excel)
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
+                return response.blob();
+            }
+            return response.json().then(data => {
+                throw new Error(data.message || 'Lỗi khi tạo file Excel');
             });
+        }).then(blob => {
+            // Tạo URL tạm thời cho file blob
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `ket-qua-diem-${currentYear}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
             
-            csvContent += rowValues.join(',') + '\n';
+            // Dọn dẹp
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            
+            showAlert('success', 'Đã xuất file Excel thành công. File sẽ được tải xuống.');
+        }).catch(error => {
+            console.error('Export error:', error);
+            showAlert('danger', `<strong>Lỗi xuất file:</strong> ${error.message}`);
         });
-        
-        // Add average score
-        csvContent += `\n"Điểm trung bình tích lũy:","${averageScore.textContent}"`;
-        
-        // Create download link
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement('a');
-        link.setAttribute('href', encodedUri);
-        link.setAttribute('download', `ket-qua-diem-${currentYear}.csv`);
-        document.body.appendChild(link);
-        
-        // Trigger download
-        link.click();
-        
-        // Clean up
-        document.body.removeChild(link);
     } catch (error) {
         showAlert('danger', `<strong>Lỗi xuất file:</strong> ${error.message}`);
     }
@@ -667,6 +736,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Form submission
     subjectForm.addEventListener('submit', processForm);
     
+    // Initially disable submit button until validation passes
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.classList.remove('btn-primary');
+        submitButton.classList.add('btn-secondary');
+    }
+    
     // Search input
     if (searchSubject) {
         searchSubject.addEventListener('input', filterAndDisplaySubjects);
@@ -678,7 +754,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Fill all button
-    if (fillAllBtn) {
+    if (fillAllBtn && quickFillModal) {
         fillAllBtn.addEventListener('click', () => {
             quickFillModal.show();
         });
@@ -688,8 +764,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (confirmFillAll) {
         confirmFillAll.addEventListener('click', () => {
             const value = document.getElementById('fill-all-value').value;
+            
+            // Validate fill all value
+            const score = parseFloat(value);
+            if (isNaN(score) || score < 0 || score > 10) {
+                showAlert('danger', 'Giá trị điểm không hợp lệ. Vui lòng nhập điểm từ 0 đến 10.');
+                return;
+            }
+            
             fillAllScores(value);
-            quickFillModal.hide();
+            if (quickFillModal) {
+                quickFillModal.hide();
+            }
             showAlert('success', `Đã điền giá trị ${value} cho tất cả các môn học.`);
         });
     }

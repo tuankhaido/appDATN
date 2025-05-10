@@ -57,6 +57,35 @@ body {
     border-left-color: #E74C3C;
 }
 
+/* Emphasized invalid field */
+.subject-card.invalid .form-control {
+    border-color: #E74C3C;
+    background-color: rgba(231, 76, 60, 0.05);
+}
+
+.subject-card.invalid .form-floating label {
+    color: #E74C3C;
+}
+
+.invalid-feedback {
+    display: none;
+    color: #E74C3C;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+.subject-card.invalid .invalid-feedback {
+    display: block;
+}
+
+.form-control.is-invalid {
+    border-color: #E74C3C;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23E74C3C'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23E74C3C' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
 .subject-code {
     font-weight: bold;
     padding: 0.2rem 0.5rem;
@@ -132,6 +161,13 @@ body {
     color: #fff !important;
     background-color: #324eb4 !important;
     border-color: #324eb4 !important;
+}
+
+/* Button states */
+.btn:disabled, .btn.disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 /* Card header for results */
@@ -277,4 +313,15 @@ body {
 
 .modal-footer {
     border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Shaking animation for invalid fields */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+  animation: shake 0.7s;
 }

@@ -3,7 +3,9 @@ import json
 import pandas as pd
 import joblib
 import numpy as np
-from flask import Flask, jsonify, request, send_from_directory
+import io
+import openpyxl
+from flask import Flask, jsonify, request, send_from_directory, Response, make_response
 
 app = Flask(__name__, static_folder='.')
 
@@ -213,6 +215,99 @@ def submit_scores():
         prediction_result = predict_graduation(year, scores)
         
         return jsonify(prediction_result)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/api/export-excel', methods=['POST'])
+def export_excel():
+    try:
+        data = request.json
+        scores = data.get('scores', [])
+        year = data.get('year', 'nam1')
+        avg_score = calculate_weighted_average(scores)
+        
+        # Tạo workbook mới
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Kết quả điểm"
+        
+        # Thiết lập font chữ
+        for col in range(1, 6):
+            ws.column_dimensions[openpyxl.utils.get_column_letter(col)].width = 15
+        
+        # Thêm tiêu đề
+        ws['A1'] = "Kết quả điểm học tập"
+        font = openpyxl.styles.Font(bold=True, size=14)
+        ws['A1'].font = font
+        ws.merge_cells('A1:E1')
+        
+        # Căn giữa tiêu đề
+        ws['A1'].alignment = openpyxl.styles.Alignment(horizontal='center')
+        
+        # Thêm header cho bảng
+        headers = ["Học kỳ", "Mã học phần", "Môn học", "Số tín chỉ", "Điểm"]
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=3, column=col, value=header)
+            cell.font = openpyxl.styles.Font(bold=True)
+            cell.alignment = openpyxl.styles.Alignment(horizontal='center')
+            cell.fill = openpyxl.styles.PatternFill(start_color="E0E0E0", end_color="E0E0E0", fill_type="solid")
+            cell.border = openpyxl.styles.Border(
+                left=openpyxl.styles.Side(style='thin'), 
+                right=openpyxl.styles.Side(style='thin'),
+                top=openpyxl.styles.Side(style='thin'),
+                bottom=openpyxl.styles.Side(style='thin')
+            )
+
+        # Sắp xếp điểm theo học kỳ
+        sorted_scores = sorted(scores, key=lambda x: x['semester'])
+        
+        # Thêm dữ liệu
+        for i, score in enumerate(sorted_scores, 1):
+            row = i + 3
+            values = [
+                f"Học kỳ {score['semester']}", 
+                score['subjectCode'], 
+                score['subjectName'], 
+                score['credits'], 
+                round(score['score'], 1)
+            ]
+            
+            for col, value in enumerate(values, 1):
+                cell = ws.cell(row=row, column=col, value=value)
+                cell.border = openpyxl.styles.Border(
+                    left=openpyxl.styles.Side(style='thin'), 
+                    right=openpyxl.styles.Side(style='thin'),
+                    top=openpyxl.styles.Side(style='thin'),
+                    bottom=openpyxl.styles.Side(style='thin')
+                )
+                
+                # Căn giữa các cột số
+                if col in [1, 4, 5]:
+                    cell.alignment = openpyxl.styles.Alignment(horizontal='center')
+        
+        # Thêm điểm trung bình tích lũy
+        last_row = len(sorted_scores) + 4
+        avg_cell = ws.cell(row=last_row, column=4, value="Điểm trung bình:")
+        avg_cell.font = openpyxl.styles.Font(bold=True)
+        avg_cell.alignment = openpyxl.styles.Alignment(horizontal='right')
+        
+        score_cell = ws.cell(row=last_row, column=5, value=round(avg_score, 2))
+        score_cell.font = openpyxl.styles.Font(bold=True)
+        score_cell.alignment = openpyxl.styles.Alignment(horizontal='center')
+        
+        # Lưu workbook vào BytesIO
+        excel_file = io.BytesIO()
+        wb.save(excel_file)
+        excel_file.seek(0)
+        
+        # Tạo response với file Excel
+        response = make_response(excel_file.getvalue())
+        response.headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response.headers['Content-Disposition'] = f'attachment; filename=ket-qua-diem-{year}.xlsx'
+        
+        return response
     except Exception as e:
         import traceback
         traceback.print_exc()
