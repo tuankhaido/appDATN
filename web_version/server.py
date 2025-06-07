@@ -10,14 +10,14 @@ from flask import Flask, jsonify, request, send_from_directory, Response, make_r
 app = Flask(__name__, static_folder='.')
 
 # Đường dẫn tới file Excel
-EXCEL_FILE_PATH = '../attached_assets/GiaoDien_KhungChuongTrinh.xlsx'
+EXCEL_FILE_PATH = './DATN/appDATN/attached_assets/GiaoDien_KhungChuongTrinh.xlsx'
 
 # Đường dẫn tới các mô hình
 MODEL_PATHS = {
-    'nam1': '../attached_assets/best_model_Year_1_Naive_Bayes.pkl',
-    'nam2': '../attached_assets/best_model_Year_2_Logistic_Regression.pkl',
-    'nam3': '../attached_assets/best_model_Year_3_SVM.pkl',
-    'nam4': '../attached_assets/best_model_Year_4_Naive_Bayes.pkl'
+    'nam1': './DATN/appDATN/attached_assets/best_model_Year_1_Naive_Bayes.pkl',
+    'nam2': './DATN/appDATN/attached_assets/best_model_Year_2_Logistic_Regression.pkl',
+    'nam3': './DATN/appDATN/attached_assets/best_model_Year_3_SVM.pkl',
+    'nam4': './DATN/appDATN/attached_assets/best_model_Year_4_Naive_Bayes.pkl'
 }
 
 # Dữ liệu về các môn học và số tín chỉ
