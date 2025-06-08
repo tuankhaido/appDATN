@@ -140,22 +140,22 @@ def calculate_weighted_average(scores):
     total_credits = 0
     
     for score in scores:
-        subject_code = score['subjectCode']
+        subject_name = score['subjectName']
         letter_grade = score['score'].upper()
         
         if letter_grade not in LETTER_TO_NUMERIC:
-            logger.warning("Điểm %s không hợp lệ cho môn %s, bỏ qua", letter_grade, subject_code)
+            logger.warning("Điểm %s không hợp lệ cho môn %s, bỏ qua", letter_grade, subject_name)
             continue
         subject_score = LETTER_TO_NUMERIC[letter_grade]
         
-        subject_info = next((s for s in subjects_data if s['maHocPhan'] == subject_code), None)
+        subject_info = next((s for s in subjects_data if s['tenHocPhan'] == subject_name), None)
         
         if subject_info:
             credits = subject_info['soTinChi']
             total_weighted_score += subject_score * credits
             total_credits += credits
         else:
-            logger.warning("Không tìm thấy môn học %s trong dữ liệu", subject_code)
+            logger.warning("Không tìm thấy môn học %s trong dữ liệu", subject_name)
     
     if total_credits > 0:
         avg_score = total_weighted_score / total_credits
