@@ -126,7 +126,7 @@ def read_excel_to_json():
                     'hocKy': int(row['Học Kỳ'])
                 })
         os.makedirs('data', exist_ok=True)
-        with open('data/subjects.json', 'w', encoding='utf-8') as f:
+        with open('./web_vesion/data/subjects.json', 'w', encoding='utf-8') as f:
             json.dump(subjects_data, f, ensure_ascii=False, indent=2)
         logger.info("Đã đọc và lưu dữ liệu môn học vào subjects.json")
         return subjects_data
