@@ -225,7 +225,7 @@ def predict_graduation(year, scores):
             prediction = model.predict(df)[0]
             logger.info("Mô hình năm %s dự đoán: Loại %s", year, prediction)
             
-            valid_grad_types = ["Xuất sắc", "Giỏi", "Khá", "Trung bình", "Ra trường không đúng hạn"]
+            valid_grad_types = ["Xuất Sắc", "Giỏi", "Khá", "Trung Bình", "Ra trường không đúng hạn"]
             if prediction in valid_grad_types:
                 result_message = f"Bạn sẽ tốt nghiệp Loại {prediction}" if prediction != "Ra trường không đúng hạn" else "Bạn sẽ ra trường không đúng hạn"
                 prediction_value = 1 if prediction != "Ra trường không đúng hạn" else 0
