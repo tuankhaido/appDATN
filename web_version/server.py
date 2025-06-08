@@ -283,7 +283,7 @@ def send_data(path):
 @app.route('/api/subjects', methods=['GET'])
 def get_subjects():
     try:
-        with open('data/subjects.json', 'r', encoding='utf-8') as f:
+        with open('./web_version/data/subjects.json', 'r', encoding='utf-8') as f:
             subjects_data = json.load(f)
         logger.info("Đã gửi dữ liệu môn học từ subjects.json")
         return jsonify(subjects_data)
