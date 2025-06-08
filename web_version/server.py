@@ -24,14 +24,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Đường dẫn tới file Excel
-EXCEL_FILE_PATH = './DATN/appDATN/attached_assets/GiaoDien_KhungChuongTrinh.xlsx'
+EXCEL_FILE_PATH = './appDATN/attached_assets/GiaoDien_KhungChuongTrinh.xlsx'
 
 # Đường dẫn tới các mô hình
 MODEL_PATHS = {
-    'nam1': './DATN/appDATN/attached_assets/best_model_Year_1_SVM.pkl',
-    'nam2': './DATN/appDATN/attached_assets/best_model_Year_2_SVM.pkl',
-    'nam3': './DATN/appDATN/attached_assets/best_model_Year_3_Logistic_Regression.pkl',
-    'nam4': './DATN/appDATN/attached_assets/best_model_Year_4_Logistic_Regression.pkl'
+    'nam1': './appDATN/attached_assets/best_model_Year_1_SVM.pkl',
+    'nam2': './appDATN/attached_assets/best_model_Year_2_SVM.pkl',
+    'nam3': './appDATN/attached_assets/best_model_Year_3_Logistic_Regression.pkl',
+    'nam4': './appDATN/attached_assets/best_model_Year_4_Logistic_Regression.pkl'
 }
 
 # Cache cho mô hình
