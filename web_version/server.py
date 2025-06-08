@@ -133,7 +133,7 @@ def read_excel_to_json():
     except Exception as e:
         logger.error("Lỗi khi đọc file Excel: %s", str(e))
         return []
-
+read_excel_to_json()
 # Hàm tính điểm trung bình theo tín chỉ (dựa trên điểm chữ)
 def calculate_weighted_average(scores):
     total_weighted_score = 0
