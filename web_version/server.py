@@ -291,6 +291,8 @@ def get_subjects():
         logger.error("Lỗi khi đọc subjects.json: %s", str(e))
         return jsonify({'error': str(e)}), 500
 
+# ...existing code...
+
 @app.route('/api/submit', methods=['POST'])
 def submit_scores():
     try:
@@ -298,12 +300,13 @@ def submit_scores():
         scores = data.get('scores', [])
         year = data.get('year', 'nam1')
         
-        # Chuyển đổi điểm số sang điểm chữ
+        # Chuyển đổi điểm số sang điểm chữ và lưu lại điểm số gốc
         for score in scores:
             try:
                 numeric_score = float(score['score'])
                 if numeric_score < 0 or numeric_score > 10:
                     return jsonify({'status': 'error', 'message': f"Điểm {numeric_score} không hợp lệ. Điểm phải từ 0 đến 10."}), 400
+                score['original_score'] = numeric_score  # Lưu điểm số gốc
                 score['score'] = numeric_to_letter(numeric_score)
                 logger.debug("Chuyển đổi điểm cho %s: %.2f -> %s", score['subjectCode'], numeric_score, score['score'])
             except (ValueError, TypeError):
@@ -322,6 +325,8 @@ def submit_scores():
     except Exception as e:
         logger.error("Lỗi trong submit_scores: %s", str(e))
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
+# ...existing code...
 
 @app.route('/api/export-excel', methods=['POST'])
 def export_excel():
@@ -366,28 +371,8 @@ def export_excel():
         # Thêm dữ liệu
         for i, score in enumerate(sorted_scores, 1):
             row = i + 3
-            # Nếu score['score'] là chuỗi điểm chữ, chuyển ngược về số nếu có thể
-            score_value = score['score']
-            # Nếu là số, giữ nguyên; nếu là chữ, chuyển về số nếu có trong LETTER_TO_NUMERIC
-            if isinstance(score_value, (int, float)):
-                display_score = score_value
-            else:
-                # Nếu là điểm chữ, chuyển về số GPA hoặc để nguyên nếu không hợp lệ
-                display_score = next(
-                    (k for k, v in LETTER_TO_NUMERIC.items() if k == str(score_value).upper()), 
-                    score_value
-                )
-                if display_score in LETTER_TO_NUMERIC:
-                    # Nếu là điểm chữ hợp lệ, lấy điểm số tương ứng
-                    display_score = next(
-                        (original for original in scores if original['score'] == score_value), 
-                        LETTER_TO_NUMERIC[display_score]
-                    )
-                    # Nếu tìm được điểm số gốc, lấy lại số, còn không thì lấy GPA
-                    if isinstance(display_score, dict) and 'original_score' in display_score:
-                        display_score = display_score['original_score']
-                    else:
-                        display_score = LETTER_TO_NUMERIC[display_score]
+            # Lấy điểm số gốc nếu có, nếu không thì lấy score['score']
+            display_score = score.get('original_score', score['score'])
             values = [
                 f"Học kỳ {score['semester']}", 
                 score['subjectCode'], 
@@ -395,7 +380,6 @@ def export_excel():
                 score['credits'], 
                 display_score
             ]
-            
             for col, value in enumerate(values, 1):
                 cell = ws.cell(row=row, column=col, value=value)
                 cell.border = openpyxl.styles.Border(
@@ -433,6 +417,7 @@ def export_excel():
         logger.error("Lỗi trong export_excel: %s", str(e))
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+# ...existing code...
 if __name__ == '__main__':
     os.makedirs('data', exist_ok=True)
     if not os.path.exists('data/submissions.json'):
