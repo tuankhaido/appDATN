@@ -371,12 +371,16 @@ def export_excel():
         # Thêm dữ liệu
         for i, score in enumerate(sorted_scores, 1):
             row = i + 3
-            display_score = score.get('original_score', score['score'])
+            # Ưu tiên lấy original_score nếu là số, nếu không thì lấy score nếu là số, nếu không thì để trống
+            display_score = score.get('original_score')
+            if not isinstance(display_score, (int, float)):
+                # Nếu score là số thì lấy, nếu không thì để trống
+                display_score = score['score'] if isinstance(score['score'], (int, float)) else ''
             values = [
-                f"Học kỳ {score['semester']}", 
-                score['subjectCode'], 
-                score['subjectName'], 
-                score['credits'], 
+                f"Học kỳ {score['semester']}",
+                score['subjectCode'],
+                score['subjectName'],
+                score['credits'],
                 display_score
             ]
             for col, value in enumerate(values, 1):
