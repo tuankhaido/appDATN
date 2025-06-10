@@ -366,12 +366,34 @@ def export_excel():
         # Thêm dữ liệu
         for i, score in enumerate(sorted_scores, 1):
             row = i + 3
+            # Nếu score['score'] là chuỗi điểm chữ, chuyển ngược về số nếu có thể
+            score_value = score['score']
+            # Nếu là số, giữ nguyên; nếu là chữ, chuyển về số nếu có trong LETTER_TO_NUMERIC
+            if isinstance(score_value, (int, float)):
+                display_score = score_value
+            else:
+                # Nếu là điểm chữ, chuyển về số GPA hoặc để nguyên nếu không hợp lệ
+                display_score = next(
+                    (k for k, v in LETTER_TO_NUMERIC.items() if k == str(score_value).upper()), 
+                    score_value
+                )
+                if display_score in LETTER_TO_NUMERIC:
+                    # Nếu là điểm chữ hợp lệ, lấy điểm số tương ứng
+                    display_score = next(
+                        (original for original in scores if original['score'] == score_value), 
+                        LETTER_TO_NUMERIC[display_score]
+                    )
+                    # Nếu tìm được điểm số gốc, lấy lại số, còn không thì lấy GPA
+                    if isinstance(display_score, dict) and 'original_score' in display_score:
+                        display_score = display_score['original_score']
+                    else:
+                        display_score = LETTER_TO_NUMERIC[display_score]
             values = [
                 f"Học kỳ {score['semester']}", 
                 score['subjectCode'], 
                 score['subjectName'], 
                 score['credits'], 
-                score['score'].upper()
+                display_score
             ]
             
             for col, value in enumerate(values, 1):
