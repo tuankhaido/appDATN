@@ -371,7 +371,6 @@ def export_excel():
         # Thêm dữ liệu
         for i, score in enumerate(sorted_scores, 1):
             row = i + 3
-            # Lấy điểm số gốc nếu có, nếu không thì lấy score['score']
             display_score = score.get('original_score', score['score'])
             values = [
                 f"Học kỳ {score['semester']}", 
@@ -389,8 +388,7 @@ def export_excel():
                     bottom=openpyxl.styles.Side(style='thin')
                 )
                 if col in [1, 4, 5]:
-                    cell.alignment = openpyxl.styles.Alignment(horizontal='center')
-        
+                    cell.alignment = openpyxl.styles.Alignment(horizontal='center')        
         # Thêm điểm trung bình
         last_row = len(sorted_scores) + 4
         avg_cell = ws.cell(row=last_row, column=4, value="Điểm trung bình:")

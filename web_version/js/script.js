@@ -526,15 +526,15 @@ function processForm(event) {
     // For all subjects in the current year
     subjectsData.filter(subject => yearInfo.semesters.includes(subject.hocKy)).forEach(subject => {
         const inputId = `subject-${subject.maHocPhan}`;
-        
-        // Check if we have a stored value for this subject
         if (storedInputValues[inputId]) {
+            const originalScore = parseFloat(storedInputValues[inputId]);
             subjectScores.push({
                 subjectCode: subject.maHocPhan,
                 subjectName: subject.tenHocPhan,
                 credits: subject.soTinChi,
                 semester: subject.hocKy,
-                score: parseFloat(storedInputValues[inputId])
+                score: originalScore,           // Điểm số gốc (số)
+                original_score: originalScore   // Thêm trường original_score
             });
         }
     });
@@ -662,15 +662,15 @@ function exportResultsToCSV() {
         // For all subjects in the current year
         subjectsData.filter(subject => yearInfo.semesters.includes(subject.hocKy)).forEach(subject => {
             const inputId = `subject-${subject.maHocPhan}`;
-            
-            // Check if we have a stored value for this subject
             if (storedInputValues[inputId]) {
+                const originalScore = parseFloat(storedInputValues[inputId]);
                 subjectScores.push({
                     subjectCode: subject.maHocPhan,
                     subjectName: subject.tenHocPhan,
                     credits: subject.soTinChi,
                     semester: subject.hocKy,
-                    score: parseFloat(storedInputValues[inputId])
+                    score: originalScore,           // Điểm số gốc (số)
+                    original_score: originalScore   // Thêm trường original_score
                 });
             }
         });
