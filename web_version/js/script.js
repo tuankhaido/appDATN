@@ -1,4 +1,3 @@
-// Constants and Variables
 const yearMapping = {
     'nam1': { name: 'Năm 1', semesters: [1, 2] },
     'nam2': { name: 'Năm 2', semesters: [1, 2, 3, 4] },
@@ -41,6 +40,17 @@ const submitButton = document.querySelector('#subject-form button[type="submit"]
 // Quick Fill Modal
 const quickFillModal = document.getElementById('quick-fill-modal') ? 
     new bootstrap.Modal(document.getElementById('quick-fill-modal')) : null;
+
+// Function to convert numeric score to letter grade
+function numericToLetter(score) {
+    score = parseFloat(score);
+    if (isNaN(score)) return 'F';
+    if (score >= 8.5) return 'A';
+    if (score >= 7.0) return 'B';
+    if (score >= 5.5) return 'C';
+    if (score >= 4.0) return 'D';
+    return 'F';
+}
 
 // Load subjects data from JSON file
 async function loadSubjectsData() {
@@ -533,8 +543,8 @@ function processForm(event) {
                 subjectName: subject.tenHocPhan,
                 credits: subject.soTinChi,
                 semester: subject.hocKy,
-                score: originalScore,           // Điểm số gốc (số)
-                original_score: originalScore   // Thêm trường original_score
+                score: numericToLetter(originalScore), // Convert to letter grade
+                original_score: originalScore          // Keep numeric score
             });
         }
     });
@@ -595,7 +605,7 @@ function displayResults(subjectScores) {
             <td>${subject.subjectCode}</td>
             <td>${subject.subjectName}</td>
             <td>${subject.credits}</td>
-            <td>${subject.score.toFixed(1)}</td>
+            <td>${subject.original_score.toFixed(1)}</td>
         `;
         resultsBody.appendChild(row);
     });
@@ -669,8 +679,8 @@ function exportResultsToCSV() {
                     subjectName: subject.tenHocPhan,
                     credits: subject.soTinChi,
                     semester: subject.hocKy,
-                    score: originalScore,           // Điểm số gốc (số)
-                    original_score: originalScore   // Thêm trường original_score
+                    score: numericToLetter(originalScore), // Convert to letter grade
+                    original_score: originalScore          // Keep numeric score
                 });
             }
         });
