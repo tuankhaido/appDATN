@@ -375,7 +375,7 @@ def export_excel():
             display_score = score.get('original_score')
             if not isinstance(display_score, (int, float)):
                 # Nếu score là số thì lấy, nếu không thì để trống
-                display_score = score['score'] if isinstance(score['score'], (int, float)) else ''
+                display_score = score['original_score'] if isinstance(score['original_score'], (int, float)) else ''
             values = [
                 f"Học kỳ {score['semester']}",
                 score['subjectCode'],
